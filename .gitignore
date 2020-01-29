@@ -45,3 +45,4 @@ Makefile
 
 # Executables
 kvstore_server
+kvstore_server_test
