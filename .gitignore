@@ -36,3 +36,6 @@ Makefile
 
 .DS_Store
 .vscode
+
+*.pb.h
+*.pb.cc
