@@ -1,11 +1,8 @@
 // kvstore_server.cc
 
-#include "kvstore.grpc.pb.h"
+#include "kvstore_server.h"
 
-#include <unordered_map>
-#include <string>
-
-#include <grpcpp/grpcpp.h>
+#include <iostream>
 
 using grpc::Server;
 using grpc::ServerBuilder;
@@ -20,73 +17,73 @@ using kvstore::GetRequest;
 using kvstore::RemoveRequest;
 using kvstore::RemoveReply;
 
-// Local storage of key-value pairs
-std::unordered_map<std::string, std::string> storage_map;
-
-// Put key and value into storage
-// Return true if correctly stored, false otherwise
-bool PutIntoStorage(std::string key, std::string value) {
-  if (storage_map.count(key) > 0) {
+bool DataBase::PutIntoStorage(const std::string &key, const std::string &value) {
+  std::scoped_lock(map_mutex_);
+  if (storage_map_.count(key) > 0) {
     return false;
   } else {
-    storage_map.insert({key, value});
+    storage_map_.insert({key, value});
     return true;
   }
 }
 
-// Return value corresponding to key
-// Return an empty string if not found
-std::string GetFromStorage(std::string key) {
-  if (storage_map.count(key) > 0) {
-    return storage_map[key];
+const std::string DataBase::GetFromStorage(const std::string &key, bool *success) {
+  std::scoped_lock(map_mutex_);
+  if (storage_map_.count(key) > 0) {
+    *success = true;
+    return storage_map_[key];
   } else {
+    *success = false;
     return "";
   }
 }
 
-// Remove key in storage
-// Return true if key exists, false otherwise
-bool RemoveFromStorage(std::string key) {
-  if (storage_map.count(key) > 0) {
-    storage_map.erase(key);
-    return true;
+bool DataBase::RemoveFromStorage(const std::string &key) {
+    std::scoped_lock(map_mutex_);
+    if (storage_map_.count(key) > 0) {
+      storage_map_.erase(key);
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+Status KeyValueStoreImpl::Put(ServerContext* context,
+                              const PutRequest* request,
+                              PutReply* response) {
+  if (db_.PutIntoStorage(request->key(), request->value())) {
+    return Status::OK;
   } else {
-    return false;
+    return Status::CANCELLED;
   }
 }
 
-// KeyValueStore services
-class KeyValueStoreImpl final : public KeyValueStore::Service {
-  Status put(ServerContext* context, const PutRequest* request,
-             PutReply* response) override {
-    if (PutIntoStorage(request->key(), request->value())) {
-      return Status::OK;
-    } else {
-      return Status::CANCELLED;
-    }
-  }
-
-  Status get(ServerContext* context,
-             ServerReaderWriter<GetReply, GetRequest>* stream) override {
-    GetRequest request;
-    while (stream->Read(&request)) {
-      GetReply reply;
-      reply.set_value(GetFromStorage(request.key()));
+Status KeyValueStoreImpl::Get(ServerContext* context,
+                              ServerReaderWriter<GetReply, GetRequest>* stream) {
+  GetRequest request;
+  bool success;
+  while (stream->Read(&request)) {
+    GetReply reply;
+    const std::string value = db_.GetFromStorage(request.key(), &success);
+    if (success) {
+      reply.set_value(value);
       stream->Write(reply);
-    }
-    return Status::OK;
-  }
-
-  Status remove(ServerContext* context, const RemoveRequest* request,
-                RemoveReply* response) override {
-    if (RemoveFromStorage(request->key())) {
-      return Status::OK;
     } else {
       return Status::CANCELLED;
     }
   }
+  return Status::OK;
+}
 
-};
+Status KeyValueStoreImpl::Remove(ServerContext* context,
+                                 const RemoveRequest* request,
+                                 RemoveReply* response) {
+  if (db_.RemoveFromStorage(request->key())) {
+    return Status::OK;
+  } else {
+    return Status::CANCELLED;
+  }
+}
 
 // Run the server listening on port 50001
 void RunServer() {
@@ -103,8 +100,7 @@ void RunServer() {
   server->Wait();
 }
 
-int main(int argc, char const *argv[])
-{
+int main(int argc, char const *argv[]) {
   RunServer();
 
   return 0;

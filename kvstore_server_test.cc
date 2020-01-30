@@ -31,7 +31,7 @@ class KeyValueStoreClient {
       request.set_key(key);
       request.set_value(value);
 
-      Status status = stub_->put(&context, request, &reply);
+      Status status = stub_->Put(&context, request, &reply);
       if (status.ok()) {
         std::cout << "Put succeeded" << std::endl;
       } else {
@@ -42,7 +42,7 @@ class KeyValueStoreClient {
     // Check using get
     {
       ClientContext context;
-      auto stream = stub_->get(&context);
+      auto stream = stub_->Get(&context);
 
       GetRequest request;
       request.set_key(key);
@@ -64,8 +64,7 @@ class KeyValueStoreClient {
   std::unique_ptr<KeyValueStore::Stub> stub_;
 };
 
-int main(int argc, char const *argv[])
-{
+int main(int argc, char const *argv[]) {
   auto channel = grpc::CreateChannel(
       "localhost:50001", grpc::InsecureChannelCredentials());
   KeyValueStoreClient client(channel);
