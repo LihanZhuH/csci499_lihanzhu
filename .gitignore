@@ -33,7 +33,6 @@
 
 # Makefiles
 CMakeLists.txt
-Makefile
 
 # Garbage files
 .DS_Store
