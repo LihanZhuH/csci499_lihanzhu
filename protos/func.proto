@@ -40,7 +40,7 @@ message EventReply {
 }
 
 service FuncService {
-  rpc hook (HookRequest) returns (HookReply) {}
-  rpc unhook (UnhookRequest) returns (UnhookReply) {}
-  rpc event (EventRequest) returns (EventReply) {}
+  rpc Hook (HookRequest) returns (HookReply) {}
+  rpc Unhook (UnhookRequest) returns (UnhookReply) {}
+  rpc Event (EventRequest) returns (EventReply) {}
 }
