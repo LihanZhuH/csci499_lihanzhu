@@ -13,6 +13,11 @@ LDFLAGS += -L/usr/local/lib `pkg-config --libs protobuf grpc++ grpc`\
            -ldl -pthread
 endif
 
+GOOGLE_TEST_LIB = gtest
+GOOGLE_TEST_INCLUDE = /usr/local/include
+GTEST_FLAGS = -Wall -I $(GOOGLE_TEST_INCLUDE)
+GTEST_LD_FLAGS = -L /usr/local/lib -l $(GOOGLE_TEST_LIB) -l pthread
+
 PROTOC = protoc
 GRPC_CPP_PLUGIN = grpc_cpp_plugin
 GRPC_CPP_PLUGIN_PATH ?= `which $(GRPC_CPP_PLUGIN)`
@@ -21,7 +26,7 @@ PROTOS_PATH = ./protos
 
 vpath %.proto $(PROTOS_PATH)
 
-all: kvstore.grpc.pb.cc kvstore.pb.cc kvstore_server kvstore_server_test func.grpc.pb.cc func.pb.cc
+all: kvstore.grpc.pb.cc kvstore.pb.cc kvstore_server kvstore_server_test database_test func.grpc.pb.cc func.pb.cc
 
 # kvstore
 kvstore.grpc.pb.cc: $(PROTOS_PATH)/kvstore.proto
@@ -30,7 +35,7 @@ kvstore.grpc.pb.cc: $(PROTOS_PATH)/kvstore.proto
 kvstore.pb.cc: $(PROTOS_PATH)/kvstore.proto
 	$(PROTOC) -I $(PROTOS_PATH) --cpp_out=. $<
 
-kvstore_server: kvstore_server.o kvstore.grpc.pb.o kvstore.pb.o
+kvstore_server: kvstore_server.o kvstore.grpc.pb.o kvstore.pb.o database.o
 	$(CXX) $^ $(LDFLAGS) -o $@
 
 kvstore_server_test: kvstore_server_test.o kvstore.grpc.pb.o kvstore.pb.o
@@ -47,6 +52,19 @@ kvstore_server.o: kvstore_server.cc kvstore_server.h
 
 kvstore_server_test.o: kvstore_server_test.cc
 	$(CXX) $^ $(CXXFLAGS) `pkg-config --cflags protobuf grpc` -c -o $@
+
+# Database
+database.o: database.cc database.h
+	$(CXX) $< $(CXXFLAGS) -c -o $@
+
+database_test.o: database.o database_test.cc
+	$(CXX) $^ $(CXXFLAGS) $(GTEST_FLAGS) $(GTEST_LD_FLAGS) -c -o $@
+
+gtest_main.o: gtest_main.cc
+	$(CXX) $< $(CXXFLAGS) $(GTEST_FLAGS) $(GTEST_LD_FLAGS) -c -o $@
+
+database_test: gtest_main.o database_test.o database.o
+	$(CXX) $^ $(CXXFLAGS) $(GTEST_FLAGS) $(GTEST_LD_FLAGS) -o $@
 
 # func
 func.grpc.pb.cc: $(PROTOS_PATH)/func.proto

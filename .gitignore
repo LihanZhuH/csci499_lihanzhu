@@ -45,3 +45,6 @@ CMakeLists.txt
 # Executables
 kvstore_server
 kvstore_server_test
+database_test
+
+grpc
