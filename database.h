@@ -8,7 +8,8 @@
 // Data Storage
 class DataBase {
  public:
-  DataBase() {}
+  // Initialize map and mutex
+  DataBase(): storage_map_(), map_mutex_() {}
   ~DataBase() {}
 
   // Put 'key' and 'value' into storage

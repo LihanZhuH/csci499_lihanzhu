@@ -57,7 +57,7 @@ kvstore_server_test.o: kvstore_server_test.cc
 database.o: database.cc database.h
 	$(CXX) $< $(CXXFLAGS) -c -o $@
 
-database_test.o: database.o database_test.cc
+database_test.o: database_test.cc
 	$(CXX) $^ $(CXXFLAGS) $(GTEST_FLAGS) $(GTEST_LD_FLAGS) -c -o $@
 
 gtest_main.o: gtest_main.cc
@@ -81,7 +81,7 @@ func.pb.o: func.pb.cc
 	
 .PHONY: clean
 clean:
-	rm *.o *.pb.cc *.pb.h kvstore_server kvstore_server_test
+	rm *.o *.pb.cc *.pb.h kvstore_server kvstore_server_test database_test
 
 
 # .PRECIOUS: %.grpc.pb.cc
