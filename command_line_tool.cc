@@ -91,6 +91,7 @@ int main(int argc, char *argv[]) {
   ::google::ParseCommandLineFlags(&argc, &argv, true);
 
   // Check each combination of arguments
+  // TODO: Will call different function and send data to Func server
   if (IsRegister()) {
     std::cout << "REGISTER" << std::endl;
   } else if (IsNewWarble()) {
