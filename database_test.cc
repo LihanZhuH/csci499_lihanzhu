@@ -2,16 +2,18 @@
 
 #include <gtest/gtest.h>
 
+// Test of Database Put and Get functionalities
 TEST(DatabaseTest, PutAndGet) {
   {
     // Putting two entries with the same key
+    // Should not allow the second put
     DataBase db;
     EXPECT_TRUE(db.PutIntoStorage("key1", "value1"));
     EXPECT_FALSE(db.PutIntoStorage("key1", "value2"));
   }
 
   {
-    // Putting and getting
+    // Putting and getting with the same key
     DataBase db;
     bool success;
     EXPECT_TRUE(db.PutIntoStorage("key1", "value1"));
@@ -20,7 +22,7 @@ TEST(DatabaseTest, PutAndGet) {
   }
 
   {
-    // Putting and getting
+    // Putting and getting with a different key
     DataBase db;
     bool success;
     EXPECT_TRUE(db.PutIntoStorage("key1", "value1"));
@@ -29,9 +31,10 @@ TEST(DatabaseTest, PutAndGet) {
   }
 }
 
+// Test of Database Put and Remove functionalities
 TEST(DatabaseTest, PutAndRemove) {
   {
-    // Putting and removing
+    // Putting and removing with the same key
     DataBase db;
     bool success;
     EXPECT_TRUE(db.PutIntoStorage("key1", "value1"));
@@ -42,7 +45,7 @@ TEST(DatabaseTest, PutAndRemove) {
   }
 
   {
-    // Putting and removing
+    // Putting and removing with a different key
     DataBase db;
     EXPECT_TRUE(db.PutIntoStorage("key1", "value1"));
     EXPECT_FALSE(db.RemoveFromStorage("key2"));

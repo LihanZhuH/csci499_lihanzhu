@@ -5,11 +5,12 @@
 #include <string>
 #include <mutex>
 
-// Data Storage
+// Database storage for thread-safe put, get, and remove
+// Keys and values are std::string
 class DataBase {
  public:
   // Initialize map and mutex
-  DataBase(): storage_map_(), map_mutex_() {}
+  DataBase() : storage_map_(), map_mutex_() {}
   ~DataBase() {}
 
   // Put 'key' and 'value' into storage
