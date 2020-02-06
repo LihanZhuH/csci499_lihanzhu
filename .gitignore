@@ -31,9 +31,6 @@
 *.out
 *.app
 
-# Makefiles
-CMakeLists.txt
-
 # Garbage files
 .DS_Store
 .vscode
@@ -47,4 +44,8 @@ kvstore_server
 kvstore_server_test
 database_test
 
-grpc
+# CMake
+CMakeFiles
+Makefile
+CMakeCache.txt
+*.cmake
