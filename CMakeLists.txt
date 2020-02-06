@@ -27,14 +27,17 @@ set(_GRPC_CPP_PLUGIN_EXECUTABLE /usr/local/bin/grpc_cpp_plugin)
 # Proto file
 get_filename_component(kv_proto "./protos/kvstore.proto" ABSOLUTE)
 get_filename_component(kv_proto_path "${kv_proto}" PATH)
+get_filename_component(func_proto "./protos/func.proto" ABSOLUTE)
+get_filename_component(func_proto_path "${func_proto}" PATH)
 
 # Generated sources
+# kvstore
 set(kv_proto_srcs "${CMAKE_CURRENT_BINARY_DIR}/kvstore.pb.cc")
 set(kv_proto_hdrs "${CMAKE_CURRENT_BINARY_DIR}/kvstore.pb.h")
 set(kv_grpc_srcs "${CMAKE_CURRENT_BINARY_DIR}/kvstore.grpc.pb.cc")
-set(hw_grpc_hdrs "${CMAKE_CURRENT_BINARY_DIR}/kvstore.grpc.pb.h")
+set(kv_grpc_hdrs "${CMAKE_CURRENT_BINARY_DIR}/kvstore.grpc.pb.h")
 add_custom_command(
-      OUTPUT "${kv_proto_srcs}" "${kv_proto_hdrs}" "${kv_grpc_srcs}" "${hw_grpc_hdrs}"
+      OUTPUT "${kv_proto_srcs}" "${kv_proto_hdrs}" "${kv_grpc_srcs}" "${kv_grpc_hdrs}"
       COMMAND ${_PROTOBUF_PROTOC}
       ARGS --grpc_out "${CMAKE_CURRENT_BINARY_DIR}"
         --cpp_out "${CMAKE_CURRENT_BINARY_DIR}"
@@ -42,6 +45,21 @@ add_custom_command(
         --plugin=protoc-gen-grpc="${_GRPC_CPP_PLUGIN_EXECUTABLE}"
         "${kv_proto}"
       DEPENDS "${kv_proto}")
+
+# func
+set(func_proto_srcs "${CMAKE_CURRENT_BINARY_DIR}/func.pb.cc")
+set(func_proto_hdrs "${CMAKE_CURRENT_BINARY_DIR}/func.pb.h")
+set(func_grpc_srcs "${CMAKE_CURRENT_BINARY_DIR}/func.grpc.pb.cc")
+set(func_grpc_hdrs "${CMAKE_CURRENT_BINARY_DIR}/func.grpc.pb.h")
+add_custom_command(
+      OUTPUT "${func_proto_srcs}" "${func_proto_hdrs}" "${func_grpc_srcs}" "${func_grpc_hdrs}"
+      COMMAND ${_PROTOBUF_PROTOC}
+      ARGS --grpc_out "${CMAKE_CURRENT_BINARY_DIR}"
+        --cpp_out "${CMAKE_CURRENT_BINARY_DIR}"
+        -I "${func_proto_path}"
+        --plugin=protoc-gen-grpc="${_GRPC_CPP_PLUGIN_EXECUTABLE}"
+        "${func_proto}"
+      DEPENDS "${func_proto}")
 
 # Include generated *.pb.h files
 include_directories("${CMAKE_CURRENT_BINARY_DIR}")
@@ -66,3 +84,9 @@ foreach(_target
     ${_PROTOBUF_LIBPROTOBUF}
     database)
 endforeach()
+
+add_custom_target(run ALL
+                  DEPENDS ${func_proto_srcs}
+                          ${func_proto_hdrs}
+                          ${func_grpc_srcs}
+                          ${func_grpc_hdrs})
