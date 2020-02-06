@@ -2,14 +2,11 @@ cmake_minimum_required(VERSION 3.5.1)
 
 project(Warble C CXX)
 
-if(NOT MSVC)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
-else()
-  add_definitions(-D_WIN32_WINNT=0x600)
-endif()
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
 
 find_package(Threads REQUIRED)
 
+# Include Protobuf
 set(protobuf_MODULE_COMPATIBLE TRUE)
 include(FindProtobuf)
 find_package(Protobuf REQUIRED)
@@ -23,11 +20,7 @@ else()
   set(_PROTOBUF_PROTOC $<TARGET_FILE:protobuf::protoc>)
 endif()
 
-# Find gRPC installation
-# Looks for gRPCConfig.cmake file installed by gRPC's cmake installation.
-# find_package(gRPC REQUIRED)
-# message(STATUS "Using gRPC ${gRPC_VERSION}")
-
+# Include gRPC
 set(_GRPC_GRPCPP_UNSECURE grpc++_unsecure)
 set(_GRPC_CPP_PLUGIN_EXECUTABLE /usr/local/bin/grpc_cpp_plugin)
 
@@ -56,37 +49,13 @@ include_directories("${CMAKE_CURRENT_BINARY_DIR}")
 # Compiles database as a library
 add_library(database STATIC database.cc database.h)
 
+# Google test
 add_executable(database_test database_test.cc)
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}")
 include_directories("${CMAKE_CURRENT_BINARY_DIR}/googletest/include")
-
 target_link_libraries(database_test database gtest gtest_main "gtest" "gtest_main" "pthread")
 
-# add_library(gtest_main STATIC gtest_main.cc)
-
-# # Adds test
-# find_package(GTest REQUIRED)
-# include_directories(${GTEST_INCLUDE_DIRS})
-# set(GTEST_BOTH_LIBRARIES "")
-
-# add_executable(database_test database_test.cc)
-
-# target_link_libraries(database_test ${GTEST_BOTH_LIBRARIES})
-
-# add_test(AllTestsInFoo database_test)
-
-# gtest_add_tests(database_test "" AUTO)
-# target_link_libraries(database_test PUBLIC
-#     gtest
-#     gtest_main
-#     database
-# )
-# add_test(
-#     NAME database_test
-#     COMMAND database_test
-# )
-
-# Targets greeter_[async_](client|server)
+# Generate targets
 foreach(_target
   kvstore_server)
   add_executable(${_target} "${_target}.cc"
