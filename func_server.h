@@ -11,6 +11,11 @@
 // Implementation of Func Service
 class FuncServiceImpl final : func::FuncService::Service {
  public:
+  // Constructor: initialize map
+  FuncServiceImpl() : event_map_() {}
+  FuncServiceImpl(const FuncServiceImpl&) = delete;
+  FuncServiceImpl& operator=(const FuncServiceImpl&) = delete;
+
   // Hook an event type with an event function
   grpc::Status Hook(grpc::ServerContext* context,
                     const func::HookRequest* request,

@@ -30,6 +30,10 @@ get_filename_component(kv_proto_path "${kv_proto}" PATH)
 get_filename_component(func_proto "./protos/func.proto" ABSOLUTE)
 get_filename_component(func_proto_path "${func_proto}" PATH)
 
+# find glog
+set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
+find_package(GLog REQUIRED)
+
 # Generated sources
 # kvstore
 set(kv_proto_srcs "${CMAKE_CURRENT_BINARY_DIR}/kvstore.pb.cc")
@@ -82,7 +86,8 @@ foreach(_target
   target_link_libraries(${_target}
     ${_GRPC_GRPCPP_UNSECURE}
     ${_PROTOBUF_LIBPROTOBUF}
-    database)
+    database
+    ${GLOG_LIBRARIES})
 endforeach()
 
 add_custom_target(run ALL
