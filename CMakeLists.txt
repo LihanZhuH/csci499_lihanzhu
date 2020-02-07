@@ -34,6 +34,9 @@ get_filename_component(func_proto_path "${func_proto}" PATH)
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 find_package(GLog REQUIRED)
 
+# find gtest
+find_package(GTest REQUIRED)
+
 # Generated sources
 # kvstore
 set(kv_proto_srcs "${CMAKE_CURRENT_BINARY_DIR}/kvstore.pb.cc")
@@ -73,9 +76,9 @@ add_library(database STATIC database.cc database.h)
 
 # Google test
 add_executable(database_test database_test.cc)
-include_directories("${CMAKE_CURRENT_SOURCE_DIR}")
-include_directories("${CMAKE_CURRENT_BINARY_DIR}/googletest/include")
-target_link_libraries(database_test database gtest gtest_main "gtest" "gtest_main" "pthread")
+# include_directories("${CMAKE_CURRENT_SOURCE_DIR}")
+# include_directories("${CMAKE_CURRENT_BINARY_DIR}/googletest/include")
+target_link_libraries(database_test database gtest gtest_main "pthread")
 
 # Generate targets
 foreach(_target

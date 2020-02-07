@@ -48,4 +48,4 @@ database_test
 CMakeFiles
 Makefile
 CMakeCache.txt
-*.cmake
+cmakeinstall.cmake

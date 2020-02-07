@@ -28,8 +28,8 @@ class FuncServiceImpl final : func::FuncService::Service {
 
   // Process an imcoming request and send a response
   grpc::Status Event(grpc::ServerContext* context,
-                    const func::EventRequest* request,
-                    func::EventReply* response);
+                     const func::EventRequest* request,
+                     func::EventReply* response);
 
  private:
   std::unordered_map<int, std::string> event_map_;
