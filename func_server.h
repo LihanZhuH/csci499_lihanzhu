@@ -5,17 +5,15 @@
 
 #include <unordered_map>
 #include <string>
+#include <set>
 
 #include <grpcpp/grpcpp.h>
 
-// Implementation of Func Service
-class FuncServiceImpl final : func::FuncService::Service {
- public:
-  // Constructor: initialize map
-  FuncServiceImpl() : event_map_() {}
-  FuncServiceImpl(const FuncServiceImpl&) = delete;
-  FuncServiceImpl& operator=(const FuncServiceImpl&) = delete;
+#include "event_handler.h"
 
+// Implementation of Func Service
+class FuncServiceImpl final : public func::FuncService::Service {
+ public:
   // Hook an event type with an event function
   grpc::Status Hook(grpc::ServerContext* context,
                     const func::HookRequest* request,
@@ -32,7 +30,7 @@ class FuncServiceImpl final : func::FuncService::Service {
                      func::EventReply* response);
 
  private:
-  std::unordered_map<int, std::string> event_map_;
+  EventHandler event_handler_;
 };
 
 #endif  // FUNC_SERVER_H_
