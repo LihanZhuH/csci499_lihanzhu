@@ -43,9 +43,11 @@
 kvstore_server
 kvstore_server_test
 database_test
+func_server
+event_handler_test
 
 # CMake
 CMakeFiles
 Makefile
 CMakeCache.txt
-*.cmake
+cmake_install.cmake
