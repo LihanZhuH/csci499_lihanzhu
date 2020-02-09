@@ -35,6 +35,8 @@ find_package(GTest REQUIRED)
 # Include generated *.pb.h files
 include_directories("${CMAKE_CURRENT_BINARY_DIR}")
 
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
+
 # Generate targets
 # foreach(_target
 #   kvstore_server func_server)
