@@ -40,11 +40,7 @@
 *.pb.cc
 
 # Executables
-kvstore_server
-kvstore_server_test
-database_test
-func_server
-event_handler_test
+/bin
 
 # CMake
 CMakeFiles

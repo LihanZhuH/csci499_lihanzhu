@@ -1,7 +1,7 @@
 include(FindPackageHandleStandardArgs)
 
 if (NOT DEFINED GLOG_ROOT)
-    message("set GLOG_ROOT========================")
+#     message("-- Setting GLOG_ROOT")
     set (GLOG_ROOT /usr /usr/local /usr/include/)
 endif (NOT DEFINED GLOG_ROOT)
 
@@ -27,6 +27,7 @@ find_package_handle_standard_args(GLOG DEFAULT_MSG
 if(GLOG_FOUND)
     set(GLOG_INCLUDE_DIRS ${GLOG_INCLUDE_DIR})
     set(GLOG_LIBRARIES ${GLOG_LIBRARY})
-    message("GLOG_INCLUDE_DIRS ${GLOG_INCLUDE_DIRS}===========")
-    message("GLOG_LIBRARY ${GLOG_LIBRARY}===========")
+    message(STATUS "GLOG_INCLUDE_DIRS: ${GLOG_INCLUDE_DIRS}")
+    message(STATUS "GLOG_LIBRARY: ${GLOG_LIBRARY}")
+    message(STATUS "Using glog")
 endif()

@@ -1,7 +1,7 @@
 include(FindPackageHandleStandardArgs)
 
 if (NOT DEFINED GTEST_ROOT)
-    message("set GTEST_ROOT========================")
+#     message("-- Setting GTEST_ROOT========================")
     set (GTEST_ROOT /usr /usr/local /usr/include/)
 endif (NOT DEFINED GTEST_ROOT)
 
@@ -27,6 +27,7 @@ find_package_handle_standard_args(GTEST DEFAULT_MSG
 if(GTEST_FOUND)
     set(GTEST_INCLUDE_DIRS ${GTEST_INCLUDE_DIR})
     set(GTEST_LIBRARIES ${GTEST_LIBRARY})
-    message("GTEST_INCLUDE_DIRS ${GTEST_INCLUDE_DIRS}===========")
-    message("GTEST_LIBRARY ${GTEST_LIBRARY}===========")
+    message(STATUS "GTEST_INCLUDE_DIRS ${GTEST_INCLUDE_DIRS}")
+    message(STATUS "GTEST_LIBRARY ${GTEST_LIBRARY}")
+    message(STATUS "Using gtest")
 endif()
