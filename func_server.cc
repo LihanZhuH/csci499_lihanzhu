@@ -16,6 +16,8 @@ using func::UnhookReply;
 using func::EventRequest;
 using func::EventReply;
 
+namespace func {
+
 Status FuncServiceImpl::Hook(ServerContext* context,
                              const HookRequest* request,
                              HookReply* response) {
@@ -44,15 +46,17 @@ Status FuncServiceImpl::Event(ServerContext* context,
                               EventReply* response) {
   int event_type = request->event_type();
   
-  // UNDER CONSTRUCTION
-  
+  // TODO
+
   return Status::OK;
 }
+
+}  // namespace func
 
 // Run the server listening on port 50000
 void RunServer() {
   std::string server_address("0.0.0.0:50000");
-  FuncServiceImpl service;
+  func::FuncServiceImpl service;
 
   ServerBuilder builder;
   builder.AddListeningPort(server_address, grpc::InsecureServerCredentials());

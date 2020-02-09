@@ -11,6 +11,8 @@
 
 #include "event_handler.h"
 
+namespace func {
+
 // Implementation of Func Service
 class FuncServiceImpl final : public func::FuncService::Service {
  public:
@@ -30,7 +32,9 @@ class FuncServiceImpl final : public func::FuncService::Service {
                      func::EventReply* response);
 
  private:
-  EventHandler event_handler_;
+  warble::EventHandler event_handler_;
 };
+
+}  // namespace func
 
 #endif  // FUNC_SERVER_H_

@@ -50,4 +50,4 @@ event_handler_test
 CMakeFiles
 Makefile
 CMakeCache.txt
-cmakeinstall.cmake
+cmake_install.cmake

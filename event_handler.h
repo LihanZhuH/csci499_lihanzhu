@@ -8,6 +8,8 @@
 
 #include <glog/logging.h>
 
+namespace warble {
+
 // Class to handle Hook, Unhook and Event
 // Connect event_type to event_function through a map
 class EventHandler {
@@ -47,5 +49,7 @@ class EventHandler {
   // Set of valid function names
   std::set<std::string> event_function_set_;
 };
+
+}  // namespace warble
 
 #endif  // EVENT_HANDLER_H
