@@ -1,1 +1,1 @@
-# csci499_lihanzhu
+# CSCI 499 Project
