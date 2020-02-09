@@ -51,8 +51,6 @@ Status FuncServiceImpl::Event(ServerContext* context,
   return Status::OK;
 }
 
-}  // namespace func
-
 // Run the server listening on port 50000
 void RunServer() {
   std::string server_address("0.0.0.0:50000");
@@ -68,8 +66,10 @@ void RunServer() {
   server->Wait();
 }
 
+}  // namespace func
+
 int main(int argc, char const *argv[]) {
-  RunServer();
+  func::RunServer();
 
   return 0;
 }
