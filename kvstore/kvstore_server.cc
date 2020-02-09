@@ -24,9 +24,8 @@ Status KeyValueStoreImpl::Put(ServerContext* context,
                               PutReply* response) {
   if (db_.PutIntoStorage(request->key(), request->value())) {
     return Status::OK;
-  } else {
-    return Status::CANCELLED;
   }
+  return Status::CANCELLED;
 }
 
 Status KeyValueStoreImpl::Get(ServerContext* context,
@@ -36,12 +35,11 @@ Status KeyValueStoreImpl::Get(ServerContext* context,
   while (stream->Read(&request)) {
     GetReply reply;
     const std::string value = db_.GetFromStorage(request.key(), &success);
-    if (success) {
-      reply.set_value(value);
-      stream->Write(reply);
-    } else {
+    if (!success) {
       return Status::CANCELLED;
     }
+    reply.set_value(value);
+    stream->Write(reply);
   }
   return Status::OK;
 }
@@ -51,9 +49,8 @@ Status KeyValueStoreImpl::Remove(ServerContext* context,
                                  RemoveReply* response) {
   if (db_.RemoveFromStorage(request->key())) {
     return Status::OK;
-  } else {
-    return Status::CANCELLED;
   }
+  return Status::CANCELLED;
 }
 
 // Run the server listening on port 50001
