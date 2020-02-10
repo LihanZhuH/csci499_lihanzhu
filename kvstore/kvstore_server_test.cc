@@ -51,9 +51,13 @@ class KeyValueStoreClient {
       stream->Write(request);
 
       GetReply response;
-      stream->Read(&response);
+      while (stream->Read(&response)) {
+        std::cout << key << " : " << response.value() << "\n";
+      }
 
-      std::cout << key << " : " << response.value() << "\n";
+      // stream->Read(&response);
+      // std::cout << key << " : " << response.value() << "\n";  // DEBUG
+
       if (response.value() == value) {
         std::cout << "Verified" << std::endl;
       } else {

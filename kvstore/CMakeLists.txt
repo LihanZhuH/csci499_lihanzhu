@@ -28,6 +28,15 @@ add_library(database STATIC database.cc database.h)
 add_executable(database_test database_test.cc)
 target_link_libraries(database_test database gtest gtest_main "pthread")
 
+# kvstore server test
+add_executable(kvstore_server_test kvstore_server_test.cc
+  ${kv_proto_srcs}
+  ${kv_grpc_srcs})
+target_link_libraries(kvstore_server_test
+  ${_GRPC_GRPCPP_UNSECURE}
+  ${_PROTOBUF_LIBPROTOBUF}
+  ${GLOG_LIBRARIES})
+
 # Generate executables
 add_executable(kvstore_server "kvstore_server.cc"
   ${kv_proto_srcs}

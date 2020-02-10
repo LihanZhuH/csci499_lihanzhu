@@ -4,6 +4,8 @@
 
 #include <iostream>
 
+#include <glog/logging.h>
+
 using grpc::Server;
 using grpc::ServerBuilder;
 using grpc::ServerContext;
@@ -31,17 +33,19 @@ Status KeyValueStoreImpl::Put(ServerContext* context,
 Status KeyValueStoreImpl::Get(ServerContext* context,
                               ServerReaderWriter<GetReply, GetRequest>* stream) {
   GetRequest request;
-  bool success;
-  while (stream->Read(&request)) {
-    GetReply reply;
-    const std::string value = db_.GetFromStorage(request.key(), &success);
-    if (!success) {
-      return Status::CANCELLED;
+  stream->Read(&request);
+  GetReply reply;
+  // Check whether optional is null
+  if (auto value_opt = db_.GetFromStorage(request.key())) {
+    // Iterate through vector
+    for (auto value : *value_opt) {
+      reply.set_value(value);
+      stream->Write(reply);
+      LOG(INFO) << "kvstore_server - Get: " << request.key() << ", " << value;
     }
-    reply.set_value(value);
-    stream->Write(reply);
+    return Status::OK;
   }
-  return Status::OK;
+  return Status::CANCELLED;
 }
 
 Status KeyValueStoreImpl::Remove(ServerContext* context,

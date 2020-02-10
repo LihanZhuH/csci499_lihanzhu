@@ -7,18 +7,17 @@ bool DataBase::PutIntoStorage(const std::string &key, const std::string &value) 
   if (storage_map_.count(key) > 0) {
     return false;
   }
-  storage_map_.insert({key, value});
+  storage_map_[key].push_back(value);
   return true;
 }
 
-const std::string DataBase::GetFromStorage(const std::string &key, bool *success) {
+std::optional<std::vector<std::string>>
+DataBase::GetFromStorage(const std::string &key) {
   std::scoped_lock(map_mutex_);
-  if (storage_map_.count(key) > 0) {
-    *success = true;
+  if (storage_map_.count(key) > 0 && !storage_map_[key].empty()) {
     return storage_map_[key];
   }
-  *success = false;
-  return "";
+  return std::nullopt;
 }
 
 bool DataBase::RemoveFromStorage(const std::string &key) {
