@@ -24,6 +24,8 @@ namespace kvstore {
 Status KeyValueStoreImpl::Put(ServerContext* context,
                               const PutRequest* request,
                               PutReply* response) {
+  LOG(INFO) << "kvstore_server - Put: " << request->key() << ", "
+            << request->value();
   if (db_.PutIntoStorage(request->key(), request->value())) {
     return Status::OK;
   }

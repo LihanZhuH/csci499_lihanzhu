@@ -1,10 +1,16 @@
 #include "database.h"
 
+#include <algorithm>
+
 namespace kvstore {
 
 bool DataBase::PutIntoStorage(const std::string &key, const std::string &value) {
   std::scoped_lock(map_mutex_);
-  if (storage_map_.count(key) > 0) {
+  // Error if the same key-value pair exists
+  auto it = std::find(storage_map_[key].begin(),
+                      storage_map_[key].end(),
+                      value);
+  if (it != storage_map_[key].end()) {
     return false;
   }
   storage_map_[key].push_back(value);

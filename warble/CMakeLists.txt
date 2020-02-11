@@ -19,6 +19,26 @@ add_custom_command(
         "${warble_proto}"
       DEPENDS "${warble_proto}")
 
-add_custom_target(run ALL
-                  DEPENDS ${warble_proto_srcs}
-                          ${warble_proto_hdrs})
+# Compiles warble_func as a library
+add_library(warble_func STATIC
+  warble_func.cc warble_func.h
+  ${warble_proto_srcs}
+  ${PROJECT_SOURCE_DIR}/kvstore/kvstore.grpc.pb.cc
+  ${PROJECT_SOURCE_DIR}/kvstore/kvstore.pb.cc)
+target_link_libraries(warble_func
+  ${_GRPC_GRPCPP_UNSECURE}
+  ${_PROTOBUF_LIBPROTOBUF}
+  ${GLOG_LIBRARIES})
+
+# Google test
+add_executable(warble_func_test warble_func_test.cc)
+target_link_libraries(warble_func_test
+  ${_GRPC_GRPCPP_UNSECURE}
+  ${_PROTOBUF_LIBPROTOBUF}
+  ${GLOG_LIBRARIES}
+  warble_func
+  gtest gtest_main pthread)
+
+# add_custom_target(run ALL
+#                   DEPENDS ${warble_proto_srcs}
+#                           ${warble_proto_hdrs})
