@@ -45,13 +45,13 @@ class WarbleFunc {
 
  private:
   // Return true if the warble with given id exists
-  bool WarbleExists(const std::string warble_id);
+  bool WarbleExists(const std::string& warble_id);
 
   // Return true if the user with given username exists
-  bool UserExists(const std::string username);
+  bool UserExists(const std::string& username);
   
-  // Return warble given id if it exists
-  void ReadHelper(const std::string warble_id, ReadReply* response);
+  // Recursively read a thread and write to response
+  void ReadHelper(const std::string& warble_id, ReadReply* response);
   
   // Pointer of stub for connection to kvstore server
   std::unique_ptr<kvstore::KeyValueStore::Stub> stub_;

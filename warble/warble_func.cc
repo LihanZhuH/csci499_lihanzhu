@@ -8,7 +8,7 @@ grpc::Status WarbleFunc::Registeruser(const RegisteruserRequest& request,
                                       RegisteruserReply* response) {
   if (UserExists(request.username())) {
     LOG(WARNING) << "WarbleFunc - Registeruser: User already exists";
-    return grpc::Status::CANCELLED;  // If user does not exist
+    return grpc::Status::CANCELLED;  // If user exists
   }
   grpc::ClientContext kv_context;
   kvstore::PutRequest kv_request;
@@ -28,9 +28,10 @@ grpc::Status WarbleFunc::Registeruser(const RegisteruserRequest& request,
 
 grpc::Status WarbleFunc::NewWarble(const WarbleRequest& request,
                                    WarbleReply* response) {
-  grpc::ClientContext kv_context;
-  kvstore::PutRequest kv_request;
-  kvstore::PutReply kv_reply;
+  if (!UserExists(request.username())) {
+    LOG(WARNING) << "WarbleFunc - NewWarble: User does not exist";
+    return grpc::Status::CANCELLED;  // If user does not exist
+  }
   std::string username = kUsername + request.username();
   std::string text = kText + request.text();
   std::string parent_id = kReplyTo + request.parent_id();
@@ -47,10 +48,13 @@ grpc::Status WarbleFunc::NewWarble(const WarbleRequest& request,
   
   // Also increment warble_cnt_
   unsigned int new_warble_id_int = ++warble_cnt_;
-  kv_request.set_key(kWarbleID + std::to_string(new_warble_id_int));
   
   // Loop through value vector
   for (auto value : value_vec) {
+    grpc::ClientContext kv_context;
+    kvstore::PutRequest kv_request;
+    kvstore::PutReply kv_reply;
+    kv_request.set_key(kWarbleID + std::to_string(new_warble_id_int));
     kv_request.set_value(value);
 
     // Call service function on kvstore server
@@ -60,6 +64,18 @@ grpc::Status WarbleFunc::NewWarble(const WarbleRequest& request,
       return grpc::Status::CANCELLED;
     }
   }
+  // Add reply to parent warble
+  grpc::ClientContext kv_context;
+  kvstore::PutRequest kv_request;
+  kvstore::PutReply kv_reply;
+  kv_request.set_key(kWarbleID + request.parent_id());
+  kv_request.set_value(kReplies + std::to_string(new_warble_id_int));
+  auto status = stub_->Put(&kv_context, kv_request, &kv_reply);
+  if (!status.ok()) {
+    LOG(WARNING) << "WarbleFunc - NewWarble: Invalid reply";
+    return grpc::Status::CANCELLED;
+  }
+
   // Allocate a new Warble and a new timestamp
   Warble* new_warble = new Warble();
   Timestamp* new_time = new Timestamp();
@@ -82,29 +98,33 @@ grpc::Status WarbleFunc::Follow(const FollowRequest& request,
     LOG(WARNING) << "WarbleFunc - Follow: User does not exist";
     return grpc::Status::CANCELLED;  // If one of the users does not exist
   }
-  grpc::ClientContext kv_context;
-  kvstore::PutRequest kv_request;
-  kvstore::PutReply kv_reply;
+  grpc::ClientContext kv_context_cur;
+  kvstore::PutRequest kv_request_cur;
+  kvstore::PutReply kv_reply_cur;
 
   // Update current user's data
   std::string username = kUsername + request.username();
   std::string to_follow = kFollowing + request.to_follow();
-  kv_request.set_key(username);
-  kv_request.set_value(to_follow);
+  kv_request_cur.set_key(username);
+  kv_request_cur.set_value(to_follow);
   // Call service function on kvstore server
-  auto status = stub_->Put(&kv_context, kv_request, &kv_reply);
+  auto status = stub_->Put(&kv_context_cur, kv_request_cur, &kv_reply_cur);
   if (!status.ok()) {
     LOG(WARNING) << "WarbleFunc - Follow: Invalid Follow - 1";
     return grpc::Status::CANCELLED;
   }
 
+  grpc::ClientContext kv_context_to;
+  kvstore::PutRequest kv_request_to;
+  kvstore::PutReply kv_reply_to;
+
   // Update to_follow's data
   username = kUsername + request.to_follow();
   std::string follower = kFollower + request.username();
-  kv_request.set_key(username);
-  kv_request.set_value(follower);
+  kv_request_to.set_key(username);
+  kv_request_to.set_value(follower);
   // Call service function on kvstore server
-  status = stub_->Put(&kv_context, kv_request, &kv_reply);
+  status = stub_->Put(&kv_context_to, kv_request_to, &kv_reply_to);
   if (!status.ok()) {
     LOG(WARNING) << "WarbleFunc - Follow: Invalid Follow - 2";
     return grpc::Status::CANCELLED;
@@ -123,6 +143,10 @@ grpc::Status WarbleFunc::Read(const ReadRequest& request,
 
 grpc::Status WarbleFunc::Profile(const ProfileRequest& request,
                                  ProfileReply* response) {
+  if (!UserExists(request.username())) {
+    LOG(WARNING) << "WarbleFunc - Profile: User does not exist";
+    return grpc::Status::CANCELLED;  // If user does not exist
+  }
   grpc::ClientContext kv_context;
   kvstore::GetRequest kv_request;
   kvstore::GetReply kv_reply;
@@ -150,10 +174,10 @@ grpc::Status WarbleFunc::Profile(const ProfileRequest& request,
       *following = content;
     }
   }
-  return grpc::Status::CANCELLED;
+  return grpc::Status::OK;
 }
 
-bool WarbleFunc::WarbleExists(const std::string warble_id) {
+bool WarbleFunc::WarbleExists(const std::string& warble_id) {
   grpc::ClientContext kv_context;
   kvstore::GetRequest kv_request;
   kvstore::GetReply kv_reply;
@@ -171,7 +195,7 @@ bool WarbleFunc::WarbleExists(const std::string warble_id) {
   return warble_exists;
 }
 
-bool WarbleFunc::UserExists(const std::string username) {
+bool WarbleFunc::UserExists(const std::string& username) {
   grpc::ClientContext kv_context;
   kvstore::GetRequest kv_request;
   kvstore::GetReply kv_reply;
@@ -189,7 +213,7 @@ bool WarbleFunc::UserExists(const std::string username) {
   return user_exists;
 }
 
-void WarbleFunc::ReadHelper(const std::string warble_id, ReadReply* response) {
+void WarbleFunc::ReadHelper(const std::string& warble_id, ReadReply* response) {
   grpc::ClientContext kv_context;
   kvstore::GetRequest kv_request;
   kvstore::GetReply kv_reply;
