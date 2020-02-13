@@ -2,6 +2,7 @@
 #include <iostream>
 
 #include <gflags/gflags.h>
+#include <glog/logging.h>
 
 namespace command_line {
 
@@ -16,12 +17,12 @@ DEFINE_bool(profile, false, "Gets the user’s profile of following and follower
 
 // Return true if flags are for REGISTER
 bool ValidRegCmd() {
-  if (FLAGS_registeruser.length() == 0) {
+  if (FLAGS_registeruser.empty()) {
     return false;
   }
-  if (FLAGS_user.length() > 0 || FLAGS_warble.length() > 0 ||
-      FLAGS_reply.length() > 0 || FLAGS_follow.length() > 0 ||
-      FLAGS_read.length() > 0 || FLAGS_profile) {
+  if (!FLAGS_user.empty() || !FLAGS_warble.empty() ||
+      !FLAGS_reply.empty() || !FLAGS_follow.empty() ||
+      !FLAGS_read.empty() || FLAGS_profile) {
     return false;
   }
   return true;
@@ -29,11 +30,11 @@ bool ValidRegCmd() {
 
 // Return true if flags are for NEW_WARBLE
 bool ValidWarbleCmd() {
-  if (FLAGS_user.length() == 0 || FLAGS_warble.length() == 0) {
+  if (FLAGS_user.empty() || FLAGS_warble.empty()) {
     return false;
   }
-  if (FLAGS_registeruser.length() > 0 || FLAGS_reply.length() > 0 ||
-      FLAGS_follow.length() > 0 || FLAGS_read.length() > 0 || FLAGS_profile) {
+  if (!FLAGS_registeruser.empty() || !FLAGS_reply.empty() ||
+      !FLAGS_follow.empty() || !FLAGS_read.empty() || FLAGS_profile) {
     return false;
   }
   return true;
@@ -41,12 +42,12 @@ bool ValidWarbleCmd() {
 
 // Return true if flags are for NEW_REPLY
 bool ValidReplyCmd() {
-  if (FLAGS_user.length() == 0 || FLAGS_warble.length() == 0 ||
-      FLAGS_reply.length() == 0) {
+  if (FLAGS_user.empty() || FLAGS_warble.empty() ||
+      FLAGS_reply.empty()) {
     return false;
   }
-  if (FLAGS_registeruser.length() > 0 || FLAGS_follow.length() > 0 ||
-      FLAGS_read.length() > 0 || FLAGS_profile) {
+  if (!FLAGS_registeruser.empty() || !FLAGS_follow.empty() ||
+      !FLAGS_read.empty() || FLAGS_profile) {
     return false;
   }
   return true;
@@ -54,11 +55,11 @@ bool ValidReplyCmd() {
 
 // Return true if flags are for FOLLOW
 bool ValidFollowCmd() {
-  if (FLAGS_user.length() == 0 || FLAGS_follow.length() == 0) {
+  if (FLAGS_user.empty() || FLAGS_follow.empty()) {
     return false;
   }
-  if (FLAGS_registeruser.length() > 0 || FLAGS_reply.length() > 0 ||
-      FLAGS_warble.length() > 0 || FLAGS_read.length() > 0 || FLAGS_profile) {
+  if (!FLAGS_registeruser.empty() || !FLAGS_reply.empty() ||
+      !FLAGS_warble.empty() || !FLAGS_read.empty() || FLAGS_profile) {
     return false;
   }
   return true;
@@ -66,11 +67,11 @@ bool ValidFollowCmd() {
 
 // Return true if flags are for READ_WARBLE
 bool ValidReadCmd() {
-  if (FLAGS_user.length() == 0 || FLAGS_read.length() == 0) {
+  if (FLAGS_user.empty() || FLAGS_read.empty()) {
     return false;
   }
-  if (FLAGS_registeruser.length() > 0 || FLAGS_reply.length() > 0 ||
-      FLAGS_warble.length() > 0 || FLAGS_follow.length() > 0 || FLAGS_profile) {
+  if (!FLAGS_registeruser.empty() || !FLAGS_reply.empty() ||
+      !FLAGS_warble.empty() || !FLAGS_follow.empty() || FLAGS_profile) {
     return false;
   }
   return true;
@@ -78,12 +79,12 @@ bool ValidReadCmd() {
 
 // Return true if flags are for READ_WARBLE
 bool ValidProfileCmd() {
-  if (FLAGS_user.length() == 0 || !FLAGS_profile) {
+  if (FLAGS_user.empty() || !FLAGS_profile) {
     return false;
   }
-  if (FLAGS_registeruser.length() > 0 || FLAGS_reply.length() > 0 ||
-      FLAGS_warble.length() > 0 || FLAGS_follow.length() > 0 ||
-      FLAGS_read.length() > 0) {
+  if (!FLAGS_registeruser.empty() || !FLAGS_reply.empty() ||
+      !FLAGS_warble.empty() || !FLAGS_follow.empty() ||
+      !FLAGS_read.empty()) {
     return false;
   }
   return true;
@@ -97,25 +98,25 @@ int main(int argc, char *argv[]) {
   // Check each combination of arguments
   // TODO: Will call different function and send data to Func server
   if (command_line::ValidRegCmd()) {
-    std::cout << "REGISTER" << std::endl;
+    LOG(INFO) << "CommandLine: Received REGISTER";
     return 0;
   } else if (command_line::ValidWarbleCmd()) {
-    std::cout << "NEW_WARBLE" << std::endl;
+    LOG(INFO) << "CommandLine: Received NEW_WARBLE";
     return 0;
   } else if (command_line::ValidReplyCmd()) {
-    std::cout << "NEW_REPLY" << std::endl;
+    LOG(INFO) << "CommandLine: Received NEW_REPLY";
     return 0;
   } else if (command_line::ValidFollowCmd()) {
-    std::cout << "FOLLOW" << std::endl;
+    LOG(INFO) << "CommandLine: Received FOLLOW";
     return 0;
   } else if (command_line::ValidReadCmd()) {
-    std::cout << "READ_WARBLE" << std::endl;
+    LOG(INFO) << "CommandLine: Received READ_WARBLE";
     return 0;
   } else if (command_line::ValidProfileCmd()) {
-    std::cout << "PROFILE" << std::endl;
+    LOG(INFO) << "CommandLine: Received PROFILE";
     return 0;
   } else {
-    std::cout << "INVALID OPTION" << std::endl;
+    LOG(WARNING) << "CommandLine: Received INVALID OPTION";
     return 1;
   }
   return 1;
