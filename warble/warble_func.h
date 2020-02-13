@@ -4,57 +4,46 @@
 #include <string>
 #include <memory>
 #include <vector>
+#include <queue>
 #include <sys/time.h>
 
-#include <grpcpp/grpcpp.h>
-
 #include "warble/warble.pb.h"
-#include "kvstore/kvstore.grpc.pb.h"
-#include "kvstore/kvstore.pb.h"
+#include "kvstore/kvstore_client.h"
 
 namespace warble {
 
 // Warble function calls on Func platform
 // Use Protobuf for all requests and responses
-// Success/failure is signaled via returned grpc::Status
+// Success/failure is signaled via returned boolean
 class WarbleFunc {
  public:
-  // Constructor that requires a grpc Channel for kvstore server
-  WarbleFunc(std::shared_ptr<grpc::Channel> channel)
-      : stub_(kvstore::KeyValueStore::NewStub(channel)), warble_cnt_(0) {}
+  // Constructor that requires a pointer to KVStore client
+  WarbleFunc(std::shared_ptr<kvstore::KVStoreClientAbstract> client)
+      : kvstore_client_(client), warble_cnt_(0) {}
 
   // Disable move and copy
   WarbleFunc(const WarbleFunc&) = delete;
   WarbleFunc& operator=(const WarbleFunc&) = delete;
 
   // Register the given non-blank username
-  grpc::Status Registeruser(const RegisteruserRequest& request,
+  bool Registeruser(const RegisteruserRequest& request,
                             RegisteruserReply* response);
 
   // Post a new warble (optionally as a reply), return the id of the new warble
-  grpc::Status NewWarble(const WarbleRequest& request, WarbleReply* response);
+  bool NewWarble(const WarbleRequest& request, WarbleReply* response);
 
   // Start following a given user
-  grpc::Status Follow(const FollowRequest& request, FollowReply* response);
+  bool Follow(const FollowRequest& request, FollowReply* response);
 
   // Read a warble thread from the given id
-  grpc::Status Read(const ReadRequest& request, ReadReply* response);
+  bool Read(const ReadRequest& request, ReadReply* response);
 
   // Return this user’s following and followers
-  grpc::Status Profile(const ProfileRequest& request, ProfileReply* response);
+  bool Profile(const ProfileRequest& request, ProfileReply* response);
 
  private:
-  // Return true if the warble with given id exists
-  bool WarbleExists(const std::string& warble_id);
-
-  // Return true if the user with given username exists
-  bool UserExists(const std::string& username);
-  
-  // Recursively read a thread and write to response
-  void ReadHelper(const std::string& warble_id, ReadReply* response);
-  
-  // Pointer of stub for connection to kvstore server
-  std::unique_ptr<kvstore::KeyValueStore::Stub> stub_;
+  // Pointer to KVStore client that communicates to database
+  std::shared_ptr<kvstore::KVStoreClientAbstract> kvstore_client_;
 
   // Count total warbles and generate new warble id
   unsigned int warble_cnt_;

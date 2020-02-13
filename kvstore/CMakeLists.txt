@@ -24,6 +24,15 @@ add_custom_command(
 # Compiles database as a library
 add_library(database STATIC database.cc database.h)
 
+# Compile kvstore_client as a library
+add_library(kvstore_client STATIC
+  kvstore_client.cc kvstore_client.h
+  ${kv_proto_srcs} ${kv_grpc_srcs})
+target_link_libraries(kvstore_client
+  ${_GRPC_GRPCPP_UNSECURE}
+  ${_PROTOBUF_LIBPROTOBUF}
+  ${GLOG_LIBRARIES})
+
 # Google test
 add_executable(database_test database_test.cc)
 target_link_libraries(database_test database gtest gtest_main "pthread")

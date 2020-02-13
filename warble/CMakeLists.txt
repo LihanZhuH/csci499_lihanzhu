@@ -22,13 +22,11 @@ add_custom_command(
 # Compiles warble_func as a library
 add_library(warble_func STATIC
   warble_func.cc warble_func.h
-  ${warble_proto_srcs}
-  ${PROJECT_SOURCE_DIR}/kvstore/kvstore.grpc.pb.cc
-  ${PROJECT_SOURCE_DIR}/kvstore/kvstore.pb.cc)
+  ${warble_proto_srcs})
 target_link_libraries(warble_func
-  ${_GRPC_GRPCPP_UNSECURE}
   ${_PROTOBUF_LIBPROTOBUF}
-  ${GLOG_LIBRARIES})
+  ${GLOG_LIBRARIES}
+  kvstore_client)
 
 # Google test
 add_executable(warble_func_test warble_func_test.cc)
