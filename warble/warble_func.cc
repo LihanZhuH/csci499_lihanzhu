@@ -5,7 +5,7 @@
 namespace warble {
 
 bool WarbleFunc::Registeruser(const RegisteruserRequest& request,
-                                      RegisteruserReply* response) {
+                              RegisteruserReply* response) {
   if (kvstore_client_->KeyExists(kUsername+request.username())) {
     LOG(WARNING) << "WarbleFunc - Registeruser: User already exists";
     return false;  // If user exists
@@ -19,7 +19,7 @@ bool WarbleFunc::Registeruser(const RegisteruserRequest& request,
 }
 
 bool WarbleFunc::NewWarble(const WarbleRequest& request,
-                                   WarbleReply* response) {
+                           WarbleReply* response) {
   if (!kvstore_client_->KeyExists(kUsername+request.username())) {
     LOG(WARNING) << "WarbleFunc - NewWarble: User does not exist";
     return false;  // If user does not exist
@@ -85,8 +85,7 @@ bool WarbleFunc::NewWarble(const WarbleRequest& request,
   return true;
 }
 
-bool WarbleFunc::Follow(const FollowRequest& request,
-                                FollowReply* response) {
+bool WarbleFunc::Follow(const FollowRequest& request, FollowReply* response) {
   if (!kvstore_client_->KeyExists(kUsername+request.username()) ||
       !kvstore_client_->KeyExists(kUsername+request.to_follow())) {
     LOG(WARNING) << "WarbleFunc - Follow: User does not exist";
@@ -110,15 +109,15 @@ bool WarbleFunc::Follow(const FollowRequest& request,
   return true;
 }
 
-bool WarbleFunc::Read(const ReadRequest& request,
-                              ReadReply* response) {
+bool WarbleFunc::Read(const ReadRequest& request, ReadReply* response) {
   std::string warble_id = request.warble_id();
   std::queue<std::string> warble_id_queue;  // Queue of warbles in a thread
   warble_id_queue.push(warble_id);
 
   // Loop through all replies in a thread
   while (!warble_id_queue.empty()) {
-    std::string warble_id_formatted = kWarbleID + warble_id_queue.front();
+    std::string front_id = warble_id_queue.front();
+    std::string warble_id_formatted = kWarbleID + front_id;
     if (!kvstore_client_->KeyExists(warble_id_formatted)) {
       LOG(WARNING) << "WarbleFunc - Read: Invalid warble ID";
       return false;
@@ -127,7 +126,7 @@ bool WarbleFunc::Read(const ReadRequest& request,
     auto value_vec = kvstore_client_->Get(warble_id_formatted);
 
     Warble* new_warble = response->add_warbles();  // From repeated field
-    new_warble->set_id(warble_id);
+    new_warble->set_id(front_id);
     Timestamp* new_time = new Timestamp();  // Pre-allocated timestamp
     
     // Read all data of this warble and get replies
@@ -162,7 +161,7 @@ bool WarbleFunc::Read(const ReadRequest& request,
 }
 
 bool WarbleFunc::Profile(const ProfileRequest& request,
-                                 ProfileReply* response) {
+                         ProfileReply* response) {
   std::string username = kUsername + request.username();
   if (!kvstore_client_->KeyExists(username)) {
     LOG(WARNING) << "WarbleFunc - Profile: User does not exist";

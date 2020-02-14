@@ -27,7 +27,7 @@ class WarbleFunc {
 
   // Register the given non-blank username
   bool Registeruser(const RegisteruserRequest& request,
-                            RegisteruserReply* response);
+                    RegisteruserReply* response);
 
   // Post a new warble (optionally as a reply), return the id of the new warble
   bool NewWarble(const WarbleRequest& request, WarbleReply* response);
