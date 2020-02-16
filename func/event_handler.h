@@ -5,10 +5,12 @@
 #include <any>
 #include <unordered_map>
 #include <set>
+#include <mutex>
 
 #include <glog/logging.h>
+#include <google/protobuf/any.pb.h>
 
-namespace warble {
+namespace func {
 
 // Class to handle Hook, Unhook and Event
 // Connect event_type to event_function through a map
@@ -34,7 +36,8 @@ class EventHandler {
   // Call corresponding function to event type with payload
   // Return a pair: first - response payload
   //                second - true if success, false otherwise
-  std::pair<std::any, bool> Event(int event_type, const std::any& payload);
+  bool Event(int event_type, const google::protobuf::Any& payload, 
+             google::protobuf::Any* reply);
 
   // Function names
   const std::string kRegisteruser = "registeruser";
@@ -49,6 +52,9 @@ class EventHandler {
 
   // Set of valid function names
   std::set<std::string> event_function_set_;
+
+  // Mutex for thread-safe
+  std::mutex map_mutex_;
 };
 
 }  // namespace warble

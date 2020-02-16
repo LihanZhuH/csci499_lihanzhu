@@ -1,6 +1,6 @@
 #include "event_handler.h"
 
-namespace warble {
+namespace func {
 
 bool EventHandler::Hook(int event_type, const std::string &event_function) {
   // Not a valid event function
@@ -8,6 +8,7 @@ bool EventHandler::Hook(int event_type, const std::string &event_function) {
     LOG(WARNING) << "Event Handler: Invalid event function";
     return false;
   }
+  std::scoped_lock(map_mutex_);
   // event_type has been used
   if (event_map_.find(event_type) != event_map_.end()) {
     LOG(WARNING) << "Event Handler: Event type has been used";
@@ -18,6 +19,7 @@ bool EventHandler::Hook(int event_type, const std::string &event_function) {
 }
 
 bool EventHandler::Unhook(int event_type) {
+  std::scoped_lock(map_mutex_);
   // event_type does not exist
   if (event_map_.find(event_type) == event_map_.end()) {
     LOG(WARNING) << "Event Handler: Event type does not exist";
@@ -28,10 +30,13 @@ bool EventHandler::Unhook(int event_type) {
 }
 
 // TODO. HAVE NOT BEEN TESTED !!
-std::pair<std::any, bool> EventHandler::Event(int event_type, const std::any& payload) {
+bool EventHandler::Event(int event_type, const google::protobuf::Any& payload, 
+                         google::protobuf::Any* reply) {
+  std::scoped_lock(map_mutex_);
   // event_type does not exist
+  google::protobuf::Any reply_payload;
   if (event_map_.find(event_type) == event_map_.end()) {
-    return std::pair<std::any, bool>(0, false);
+    return false;
   }
   std::string event_function = event_map_[event_type];
 
@@ -49,9 +54,9 @@ std::pair<std::any, bool> EventHandler::Event(int event_type, const std::any& pa
   } else {
     // Should never reach
     LOG(FATAL) << "Event Handler: no matching function";
-    return std::pair<std::any, bool>(0, false);
+    return false;
   }
-  return std::pair<std::any, bool>(0, true);
+  return true;
 }
 
 }  // namespace warble

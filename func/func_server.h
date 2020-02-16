@@ -32,7 +32,7 @@ class FuncServiceImpl final : public func::FuncService::Service {
                      func::EventReply* response);
 
  private:
-  warble::EventHandler event_handler_;
+  EventHandler event_handler_;
 };
 
 }  // namespace func
