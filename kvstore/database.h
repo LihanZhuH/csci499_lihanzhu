@@ -4,6 +4,8 @@
 #include <unordered_map>
 #include <string>
 #include <mutex>
+#include <vector>
+#include <optional>
 
 namespace kvstore {
 
@@ -23,9 +25,10 @@ class DataBase {
   // Return true if correctly stored, false otherwise
   bool PutIntoStorage(const std::string &key, const std::string &value);
 
-  // Return the value corresponding to 'key'
-  // 'success' is set to true if found, false otherwise
-  const std::string GetFromStorage(const std::string &key, bool *success);
+  // Return an optional with all values corresponding to 'key'
+  // Optional is null if no key found
+  std::optional<std::vector<std::string>>
+  GetFromStorage(const std::string &key);
 
   // Remove key in storage
   // Return true if key exists, false otherwise
@@ -33,7 +36,7 @@ class DataBase {
 
  private:
   // Local storage of key-value pairs
-  std::unordered_map<std::string, std::string> storage_map_;
+  std::unordered_map<std::string, std::vector<std::string>> storage_map_;
 
   // Mutex for thread-safe
   std::mutex map_mutex_;

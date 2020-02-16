@@ -15,10 +15,10 @@ TEST(DatabaseTest, PutAndGet) {
   {
     // Putting and getting with the same key
     kvstore::DataBase db;
-    bool success;
     EXPECT_TRUE(db.PutIntoStorage("key1", "value1"));
-    EXPECT_EQ(db.GetFromStorage("key1", &success), "value1");
-    EXPECT_TRUE(success);
+    auto value_opt = db.GetFromStorage("key1");
+    ASSERT_TRUE(value_opt);
+    EXPECT_EQ((*value_opt)[0], "value1");
   }
 
   {
@@ -26,8 +26,8 @@ TEST(DatabaseTest, PutAndGet) {
     kvstore::DataBase db;
     bool success;
     EXPECT_TRUE(db.PutIntoStorage("key1", "value1"));
-    EXPECT_NE(db.GetFromStorage("key2", &success), "value1");
-    EXPECT_FALSE(success);
+    auto value_opt = db.GetFromStorage("key2");
+    ASSERT_FALSE(value_opt);
   }
 }
 
@@ -40,8 +40,8 @@ TEST(DatabaseTest, PutAndRemove) {
     EXPECT_TRUE(db.PutIntoStorage("key1", "value1"));
     EXPECT_TRUE(db.RemoveFromStorage("key1"));
 
-    EXPECT_NE(db.GetFromStorage("key1", &success), "value1");
-    EXPECT_FALSE(success);
+    auto value_opt = db.GetFromStorage("key1");
+    ASSERT_FALSE(value_opt);
   }
 
   {

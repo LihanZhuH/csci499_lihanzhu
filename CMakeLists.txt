@@ -59,3 +59,4 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
 # Adds subdirectories
 add_subdirectory(kvstore)
 add_subdirectory(func)
+add_subdirectory(warble)
