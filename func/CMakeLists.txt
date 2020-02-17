@@ -33,7 +33,8 @@ target_link_libraries(event_handler_test
 
 # Func server test
 add_executable(func_server_test
-  func_server_test.cc ${func_proto_srcs} ${func_grpc_srcs})
+  func_server_test.cc
+  ${func_proto_srcs} ${func_grpc_srcs} ${warble_proto_srcs})
 target_link_libraries(func_server_test
   ${_GRPC_GRPCPP_UNSECURE}
   ${_PROTOBUF_LIBPROTOBUF}

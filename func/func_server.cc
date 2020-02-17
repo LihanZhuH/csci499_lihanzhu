@@ -1,8 +1,6 @@
 #include "func_server.h"
 
-#include <grpcpp/grpcpp.h>
 #include <glog/logging.h>
-#include "func.grpc.pb.h"
 
 namespace func {
 
@@ -33,10 +31,15 @@ grpc::Status FuncServiceImpl::Event(grpc::ServerContext* context,
                               const EventRequest* request,
                               EventReply* response) {
   int event_type = request->event_type();
-  
-  // TODO
-
-  return grpc::Status::OK;
+  google::protobuf::Any payload = request->payload();
+  // Call event handler
+  if (auto optional_payload = event_handler_.Event(event_type, payload)) {
+    google::protobuf::Any* reply_payload =
+        new google::protobuf::Any(*optional_payload);
+    response->set_allocated_payload(reply_payload);
+    return grpc::Status::OK;
+  }
+  return grpc::Status::CANCELLED;
 }
 
 // Run the server listening on port 50000

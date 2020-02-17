@@ -9,6 +9,7 @@
 #include <memory>
 
 #include <grpcpp/grpcpp.h>
+#include <google/protobuf/any.pb.h>
 
 #include "func/event_handler.h"
 #include "kvstore/kvstore_client.h"
