@@ -6,9 +6,15 @@
 #include <unordered_map>
 #include <set>
 #include <mutex>
+#include <memory>
+#include <optional>
 
 #include <glog/logging.h>
 #include <google/protobuf/any.pb.h>
+
+#include "warble/warble_func.h"
+#include "warble/warble.pb.h"
+#include "kvstore/kvstore_client.h"
 
 namespace func {
 
@@ -17,8 +23,11 @@ namespace func {
 class EventHandler {
  public:
   // Default constructor
-  EventHandler() : event_map_(), event_function_set_({kRegisteruser, kWarble,
-                                                kFollow, kRead, kProfile}) {}
+  EventHandler(std::shared_ptr<kvstore::KVStoreClientAbstract> client)
+     : event_map_(),
+       event_function_set_({kRegisteruser, kWarble, kFollow, kRead, kProfile}),
+       map_mutex_(),
+       warble_func_(client) {}
   ~EventHandler() {}
   
   // Disable move and copy
@@ -34,10 +43,9 @@ class EventHandler {
   bool Unhook(int event_type);
 
   // Call corresponding function to event type with payload
-  // Return a pair: first - response payload
-  //                second - true if success, false otherwise
-  bool Event(int event_type, const google::protobuf::Any& payload, 
-             google::protobuf::Any* reply);
+  // Return true if success, false otherwise
+  std::optional<google::protobuf::Any>
+  Event(int event_type, const google::protobuf::Any& payload);
 
   // Function names
   const std::string kRegisteruser = "registeruser";
@@ -55,6 +63,9 @@ class EventHandler {
 
   // Mutex for thread-safe
   std::mutex map_mutex_;
+
+  // Warble functionalities
+  warble::WarbleFunc warble_func_;
 };
 
 }  // namespace warble

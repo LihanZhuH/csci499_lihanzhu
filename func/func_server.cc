@@ -42,7 +42,9 @@ grpc::Status FuncServiceImpl::Event(grpc::ServerContext* context,
 // Run the server listening on port 50000
 void RunServer() {
   std::string server_address("0.0.0.0:50000");
-  func::FuncServiceImpl service;
+  auto kvstore_channel = grpc::CreateChannel(
+      "0.0.0.0:50001", grpc::InsecureChannelCredentials());
+  func::FuncServiceImpl service(kvstore_channel);
 
   grpc::ServerBuilder builder;
   builder.AddListeningPort(server_address, grpc::InsecureServerCredentials());

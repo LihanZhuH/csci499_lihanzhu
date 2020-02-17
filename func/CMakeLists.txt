@@ -23,6 +23,7 @@ add_custom_command(
 
 # Compiles event_handler as a library
 add_library(event_handler STATIC event_handler.cc event_handler.h)
+target_link_libraries(event_handler kvstore_client warble_func)
 
 # Google test
 add_executable(event_handler_test event_handler_test.cc)
