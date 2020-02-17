@@ -15,6 +15,7 @@ bool EventHandler::Hook(int event_type, const std::string &event_function) {
     return false;
   }
   event_map_.insert(std::pair<int, std::string>(event_type, event_function));
+  LOG(INFO) << "Event Handler: Event " << event_function << " hooked";
   return true;
 }
 
@@ -26,6 +27,7 @@ bool EventHandler::Unhook(int event_type) {
     return false;
   }
   event_map_.erase(event_type);
+  LOG(INFO) << "Event Handler: Event " << event_type << " unhooked";
   return true;
 }
 
@@ -56,7 +58,7 @@ EventHandler::Event(int event_type, const google::protobuf::Any& payload) {
     LOG(INFO) << "Event Handler: warble called";
     warble::WarbleRequest request;
     warble::WarbleReply reply;
-    payload.UnpackTo(&reply);  // Unpack Any
+    payload.UnpackTo(&request);  // Unpack Any
 
     if (warble_func_.NewWarble(request, &reply)) {
       reply_payload.PackFrom(reply);
@@ -66,7 +68,7 @@ EventHandler::Event(int event_type, const google::protobuf::Any& payload) {
     LOG(INFO) << "Event Handler: follow called";
     warble::FollowRequest request;
     warble::FollowReply reply;
-    payload.UnpackTo(&reply);  // Unpack Any
+    payload.UnpackTo(&request);  // Unpack Any
 
     if (warble_func_.Follow(request, &reply)) {
       reply_payload.PackFrom(reply);
@@ -76,7 +78,7 @@ EventHandler::Event(int event_type, const google::protobuf::Any& payload) {
     LOG(INFO) << "Event Handler: read called";
     warble::ReadRequest request;
     warble::ReadReply reply;
-    payload.UnpackTo(&reply);  // Unpack Any
+    payload.UnpackTo(&request);  // Unpack Any
 
     if (warble_func_.Read(request, &reply)) {
       reply_payload.PackFrom(reply);
@@ -86,15 +88,16 @@ EventHandler::Event(int event_type, const google::protobuf::Any& payload) {
     LOG(INFO) << "Event Handler: profile called";
     warble::ProfileRequest request;
     warble::ProfileReply reply;
-    payload.UnpackTo(&reply);  // Unpack Any
+    payload.UnpackTo(&request);  // Unpack Any
 
     if (warble_func_.Profile(request, &reply)) {
       reply_payload.PackFrom(reply);
       return reply_payload;
     }
+  } else {
+    // Should never reach
+    LOG(FATAL) << "Event Handler: no matching function";
   }
-  // Should never reach
-  LOG(FATAL) << "Event Handler: no matching function";
   return std::nullopt;
 }
 
