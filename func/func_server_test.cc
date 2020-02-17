@@ -35,7 +35,6 @@ class FuncServiceClient {
 
   // Test of unhook
   bool TestUnhook(int event_type) {
-    LOG(INFO) << "FuncServerTest: event_type: " << event_type;
     LOG(INFO) << "TestUnhook: event_type: " << event_type;
     grpc::ClientContext context;
     func::UnhookRequest request;
