@@ -1,66 +1,59 @@
 #include "func_server.h"
 
-#include <grpcpp/grpcpp.h>
 #include <glog/logging.h>
-#include "func.grpc.pb.h"
-
-using grpc::Server;
-using grpc::ServerBuilder;
-using grpc::ServerContext;
-using grpc::ServerReaderWriter;
-using grpc::Status;
-using func::HookRequest;
-using func::HookReply;
-using func::UnhookRequest;
-using func::UnhookReply;
-using func::EventRequest;
-using func::EventReply;
 
 namespace func {
 
-Status FuncServiceImpl::Hook(ServerContext* context,
-                             const HookRequest* request,
-                             HookReply* response) {
+grpc::Status FuncServiceImpl::Hook(grpc::ServerContext* context,
+                                   const HookRequest* request,
+                                   HookReply* response) {
   int event_type = request->event_type();
   const std::string event_function = request->event_function();
   // Call event handler
   if (event_handler_.Hook(event_type, event_function)) {
-    return Status::CANCELLED;
+    return grpc::Status::OK;
   }
-  return Status::OK;
+  return grpc::Status::CANCELLED;
 }
 
-Status FuncServiceImpl::Unhook(ServerContext* context,
-                               const UnhookRequest* request,
-                               UnhookReply* response) {
+grpc::Status FuncServiceImpl::Unhook(grpc::ServerContext* context,
+                                     const UnhookRequest* request,
+                                     UnhookReply* response) {
   int event_type = request->event_type();
   // Call event handler
   if (event_handler_.Unhook(event_type)) {
-    return Status::CANCELLED;
+    return grpc::Status::OK;
   }
-  return Status::OK;
+  return grpc::Status::CANCELLED;
 }
 
-Status FuncServiceImpl::Event(ServerContext* context,
-                              const EventRequest* request,
-                              EventReply* response) {
+grpc::Status FuncServiceImpl::Event(grpc::ServerContext* context,
+                                    const EventRequest* request,
+                                    EventReply* response) {
   int event_type = request->event_type();
-  
-  // TODO
-
-  return Status::OK;
+  google::protobuf::Any payload = request->payload();
+  // Call event handler
+  if (auto optional_payload = event_handler_.Event(event_type, payload)) {
+    google::protobuf::Any* reply_payload =
+        new google::protobuf::Any(*optional_payload);
+    response->set_allocated_payload(reply_payload);
+    return grpc::Status::OK;
+  }
+  return grpc::Status::CANCELLED;
 }
 
 // Run the server listening on port 50000
 void RunServer() {
   std::string server_address("0.0.0.0:50000");
-  func::FuncServiceImpl service;
+  auto kvstore_channel = grpc::CreateChannel(
+      "0.0.0.0:50001", grpc::InsecureChannelCredentials());
+  func::FuncServiceImpl service(kvstore_channel);
 
-  ServerBuilder builder;
+  grpc::ServerBuilder builder;
   builder.AddListeningPort(server_address, grpc::InsecureServerCredentials());
   builder.RegisterService(&service);
 
-  std::unique_ptr<Server> server(builder.BuildAndStart());
+  std::unique_ptr<grpc::Server> server(builder.BuildAndStart());
   std::cout << "Server listening on " << server_address << std::endl;
 
   server->Wait();

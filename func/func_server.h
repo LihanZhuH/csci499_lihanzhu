@@ -6,16 +6,24 @@
 #include <unordered_map>
 #include <string>
 #include <set>
+#include <memory>
 
 #include <grpcpp/grpcpp.h>
+#include <google/protobuf/any.pb.h>
 
-#include "event_handler.h"
+#include "func/event_handler.h"
+#include "kvstore/kvstore_client.h"
 
 namespace func {
 
 // Implementation of Func Service
 class FuncServiceImpl final : public func::FuncService::Service {
  public:
+  // Constructor
+  FuncServiceImpl(std::shared_ptr<grpc::Channel> channel)
+       : event_handler_(std::make_shared<kvstore::KVStoreWarbleClient>
+                        (channel)) {}
+
   // Hook an event type with an event function
   grpc::Status Hook(grpc::ServerContext* context,
                     const func::HookRequest* request,
@@ -30,9 +38,9 @@ class FuncServiceImpl final : public func::FuncService::Service {
   grpc::Status Event(grpc::ServerContext* context,
                      const func::EventRequest* request,
                      func::EventReply* response);
-
+ 
  private:
-  warble::EventHandler event_handler_;
+  EventHandler event_handler_;
 };
 
 }  // namespace func

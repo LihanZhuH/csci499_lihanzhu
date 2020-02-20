@@ -23,10 +23,23 @@ add_custom_command(
 
 # Compiles event_handler as a library
 add_library(event_handler STATIC event_handler.cc event_handler.h)
+target_link_libraries(event_handler kvstore_client warble_func)
 
 # Google test
 add_executable(event_handler_test event_handler_test.cc)
-target_link_libraries(event_handler_test event_handler ${GLOG_LIBRARIES} gtest gtest_main "pthread")
+target_link_libraries(event_handler_test
+  event_handler ${GLOG_LIBRARIES} gtest gtest_main
+  -pthread -lprotobuf -lpthread)
+
+# Func server test
+add_executable(func_server_test
+  func_server_test.cc
+  ${func_proto_srcs} ${func_grpc_srcs} ${warble_proto_srcs})
+target_link_libraries(func_server_test
+  ${_GRPC_GRPCPP_UNSECURE}
+  ${_PROTOBUF_LIBPROTOBUF}
+  event_handler
+  ${GLOG_LIBRARIES})
 
 add_executable(func_server "func_server.cc"
   ${func_proto_srcs}
@@ -35,4 +48,5 @@ target_link_libraries(func_server
   ${_GRPC_GRPCPP_UNSECURE}
   ${_PROTOBUF_LIBPROTOBUF}
   event_handler
-  ${GLOG_LIBRARIES})
+  ${GLOG_LIBRARIES}
+  -pthread -lprotobuf -lpthread)
