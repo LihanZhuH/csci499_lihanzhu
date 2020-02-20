@@ -5,8 +5,8 @@
 namespace func {
 
 grpc::Status FuncServiceImpl::Hook(grpc::ServerContext* context,
-                             const HookRequest* request,
-                             HookReply* response) {
+                                   const HookRequest* request,
+                                   HookReply* response) {
   int event_type = request->event_type();
   const std::string event_function = request->event_function();
   // Call event handler
@@ -17,8 +17,8 @@ grpc::Status FuncServiceImpl::Hook(grpc::ServerContext* context,
 }
 
 grpc::Status FuncServiceImpl::Unhook(grpc::ServerContext* context,
-                               const UnhookRequest* request,
-                               UnhookReply* response) {
+                                     const UnhookRequest* request,
+                                     UnhookReply* response) {
   int event_type = request->event_type();
   // Call event handler
   if (event_handler_.Unhook(event_type)) {
@@ -28,8 +28,8 @@ grpc::Status FuncServiceImpl::Unhook(grpc::ServerContext* context,
 }
 
 grpc::Status FuncServiceImpl::Event(grpc::ServerContext* context,
-                              const EventRequest* request,
-                              EventReply* response) {
+                                    const EventRequest* request,
+                                    EventReply* response) {
   int event_type = request->event_type();
   google::protobuf::Any payload = request->payload();
   // Call event handler
