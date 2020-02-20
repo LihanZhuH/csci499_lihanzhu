@@ -44,8 +44,8 @@ class EventHandler {
 
   // Call corresponding function to event type with payload
   // Return true if success, false otherwise
-  std::optional<google::protobuf::Any>
-  Event(int event_type, const google::protobuf::Any& payload);
+  std::optional<google::protobuf::Any> Event(int event_type,
+      const google::protobuf::Any& payload);
 
   // Function names
   const std::string kRegisteruser = "registeruser";
@@ -68,6 +68,6 @@ class EventHandler {
   warble::WarbleFunc warble_func_;
 };
 
-}  // namespace warble
+}  // namespace func
 
 #endif  // EVENT_HANDLER_H
