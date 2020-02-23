@@ -39,9 +39,10 @@ std::optional<google::protobuf::Any> FuncClientImpl::Event(int event_type,
   grpc::ClientContext context;
   func::EventRequest request;
   func::EventReply reply;
-  google::protobuf::Any* request_payload = new google::protobuf::Any(payload);
+
+  google::protobuf::Any* mutable_payload = request.mutable_payload();
+  mutable_payload->CopyFrom(payload);
   request.set_event_type(event_type);
-  request.set_allocated_payload(request_payload);
   // Call Func server function
   auto status = stub_->Event(&context, request, &reply);
   if (!status.ok()) {

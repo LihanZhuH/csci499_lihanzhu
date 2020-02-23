@@ -14,6 +14,8 @@
 namespace func {
 
 // The abstract base class for Func client
+// Child classes either have to communicate directly to Func server
+// or implemente a local functions for testing
 class FuncClientAbstract {
  public:
   FuncClientAbstract() {}
@@ -34,9 +36,10 @@ class FuncClientAbstract {
 };
 
 // Func client that communicates with gRPC server
+// Provide Hook, Unhook and Event functionalities
 class FuncClientImpl : public FuncClientAbstract {
  public:
-  // Constructor require a gRPC channel to connect to
+  // Constructor: require a gRPC channel to connect to
   FuncClientImpl(std::shared_ptr<grpc::Channel> channel)
       : stub_(FuncService::NewStub(channel)) {}
 

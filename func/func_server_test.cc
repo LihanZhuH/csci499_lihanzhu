@@ -66,13 +66,25 @@ class FuncServiceClient {
     grpc::ClientContext context;
     func::EventRequest request;
     func::EventReply reply;
-    google::protobuf::Any* payload = new google::protobuf::Any();
+
+    // Allocated
+    // google::protobuf::Any* payload = new google::protobuf::Any();
+    // warble::RegisteruserRequest register_request;
+    // register_request.set_username("TEST_0");
+    // payload->PackFrom(register_request);
+    // request.set_event_type(event_type);
+    // request.set_allocated_payload(payload);
+    // LOG(INFO) << "TestEvent: done allocated payload";
+
+    // Copy from
+    google::protobuf::Any payload = google::protobuf::Any();
     warble::RegisteruserRequest register_request;
     register_request.set_username("TEST_0");
-    payload->PackFrom(register_request);
+    payload.PackFrom(register_request);
     request.set_event_type(event_type);
-    request.set_allocated_payload(payload);
-    LOG(INFO) << "TestEvent: done allocated payload";
+    auto mutable_payload = request.mutable_payload();
+    mutable_payload->CopyFrom(payload);
+    LOG(INFO) << "TestEvent: done copyfrom payload";
 
     status = stub_->Event(&context, request, &reply);
     LOG(INFO) << "TestEvent: done event call";
