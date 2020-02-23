@@ -1,4 +1,4 @@
-#include "command_line_tool.h"
+#include "command_line_tool/command_line_tool.h"
 
 namespace command_line {
 
@@ -6,21 +6,30 @@ namespace command_line {
 DEFINE_string(registeruser, "", "Registers the given username.");
 DEFINE_string(user, "", "Logs in as the given username.");
 DEFINE_string(warble, "", "Creates a new warble with the given text.");
-DEFINE_string(reply, "", "Indicates that the new warble is a reply to the given id.");
+DEFINE_string(reply, "",
+    "Indicates that the new warble is a reply to the given id.");
 DEFINE_string(follow, "", "Starts following the given username.");
 DEFINE_string(read, "", "Reads the warble thread starting at the given id.");
-DEFINE_bool(profile, false, "Gets the user’s profile of following and followers.");
+DEFINE_bool(profile, false,
+    "Gets the user’s profile of following and followers.");
 DEFINE_bool(hook, false, "Hooks all warble functions.");
 
 // -- Implementation of CommandLineHandler --
 
 bool CommandLineHandler::Init() {
   // Hook all event functions
-  func_client_->Hook(kRegisteruserPair.first, kRegisteruserPair.second);
-  func_client_->Hook(kWarblePair.first, kWarblePair.second);
-  func_client_->Hook(kFollowPair.first, kFollowPair.second);
-  func_client_->Hook(kReadPair.first, kReadPair.second);
-  func_client_->Hook(kProfilePair.first, kProfilePair.second);
+  if (
+  func_client_->Hook(kRegisteruserPair.first, kRegisteruserPair.second) &&
+  func_client_->Hook(kWarblePair.first, kWarblePair.second) &&
+  func_client_->Hook(kFollowPair.first, kFollowPair.second) &&
+  func_client_->Hook(kReadPair.first, kReadPair.second) &&
+  func_client_->Hook(kProfilePair.first, kProfilePair.second)) {
+    std::cout << "Successfully Hooked!" << std::endl;
+    return true;
+  }
+  std::cout << "Failed to hook." << std::endl;
+  LOG(WARNING) << "CommandLine: Init failed";
+  return false;
 }
 
 bool CommandLineHandler::Run() {
@@ -146,6 +155,7 @@ bool CommandLineHandler::SendWarble() {
   if (auto optional_payload =
       func_client_->Event(kWarblePair.first, request_payload)) {
     optional_payload->UnpackTo(&reply);
+    std::cout << "Warble ID: " << reply.warble().id() << std::endl;
     std::cout << "Successfully posted warble!" << std::endl;
     return true;
   }
@@ -194,6 +204,9 @@ bool CommandLineHandler::SendRead() {
                 << "Time: " << timestamp.seconds() << std::endl
                 << "Warble ID: " << warble.id() << std::endl
                 << "Warble text: " << warble.text() << std::endl;
+      if (!warble.parent_id().empty()) {
+        std::cout << "Parent warble ID: " << warble.parent_id() << std::endl;
+      }
       std::cout << std::endl;
     }
     return true;
@@ -233,7 +246,7 @@ bool CommandLineHandler::SendProfile() {
       for (int i = 0; i < repeated_followings.size(); ++i) {
         std::cout << '\t' << repeated_followings.at(i) << std::endl;
       }
-    }   
+    }
     return true;
   }
   std::cout << "Failed to display profile." << std::endl;
@@ -241,4 +254,4 @@ bool CommandLineHandler::SendProfile() {
   return false;
 }
 
-}  // command_line
+}  // namespace command_line

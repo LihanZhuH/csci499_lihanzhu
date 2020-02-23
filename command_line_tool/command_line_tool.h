@@ -1,24 +1,28 @@
-#ifndef COMMAND_LINE_TOOL_H_
-#define COMMAND_LINE_TOOL_H_
-
-#include <memory>
-#include <string>
-#include <iostream>
+#ifndef COMMAND_LINE_TOOL_COMMAND_LINE_TOOL_H_
+#define COMMAND_LINE_TOOL_COMMAND_LINE_TOOL_H_
 
 #include <gflags/gflags.h>
 #include <glog/logging.h>
 #include <google/protobuf/any.pb.h>
+
+#include <memory>
+#include <string>
+#include <iostream>
+#include <utility>
 
 #include "func/func_client.h"
 #include "warble/warble.pb.h"
 
 namespace command_line {
 
-// Handler class for command line interface
+// Handler class for command line interface.
+// It is responsible for parsing command line flags and sending appropriate
+// requests to func_server.
 class CommandLineHandler {
  public:
-  // Constructor that takes in a func_client pointer
-  CommandLineHandler(std::shared_ptr<func::FuncClientAbstract> client)
+  // Constructor: takes in a func_client pointer
+  // During Run(), func_client_ will be used to communicate to func_server
+  explicit CommandLineHandler(std::shared_ptr<func::FuncClientAbstract> client)
       : func_client_(client) {}
 
   // Disable move and copy
@@ -28,28 +32,28 @@ class CommandLineHandler {
   // Initialization: hook all event functions
   bool Init();
 
-  // Parse command line flag and request for message
+  // Parses command line flag and request for message
   bool Run();
 
  private:
-  // Define a pair with event_type and event_function name
+  // Defines a pair with event_type and event_function name
   typedef std::pair<int, std::string> event_pair;
 
   // -- Flag validation helper functions --
 
-  // Return true if flags are for REGISTER
+  // Returns true if flags are for REGISTER
   bool ValidRegCmd();
-  
-  // Return true if flags are for NEW_WARBLE
+
+  // Returns true if flags are for NEW_WARBLE
   bool ValidWarbleCmd();
 
-  // Return true if flags are for FOLLOW
+  // Returns true if flags are for FOLLOW
   bool ValidFollowCmd();
 
-  // Return true if flags are for READ_WARBLE
+  // Returns true if flags are for READ_WARBLE
   bool ValidReadCmd();
 
-  // Return true if flags are for READ_WARBLE
+  // Returns true if flags are for READ_WARBLE
   bool ValidProfileCmd();
 
   // Return true if flags are for hook
@@ -57,30 +61,30 @@ class CommandLineHandler {
 
   // -- Communication helper functions --
 
-  // Send registeruser request to Func server through func_client
+  // Sends registeruser request to Func server through func_client
   // Success/failure signaled by return value
   bool SendRegisteruser();
 
-  // Send registeruser request to Func server through func_client
+  // Sends registeruser request to Func server through func_client
   // Success/failure signaled by return value
   bool SendWarble();
 
-  // Send registeruser request to Func server through func_client
+  // Sends registeruser request to Func server through func_client
   // Success/failure signaled by return value
   bool SendFollow();
 
-  // Send registeruser request to Func server through func_client
+  // Sends registeruser request to Func server through func_client
   // Success/failure signaled by return value
   bool SendRead();
 
-  // Send registeruser request to Func server through func_client
+  // Sends registeruser request to Func server through func_client
   // Success/failure signaled by return value
   bool SendProfile();
 
   // Pointer to Func client that communicates to Func server
   std::shared_ptr<func::FuncClientAbstract> func_client_;
 
-  // Event pairs
+  // Stores event_pairs as constants
   const event_pair kRegisteruserPair = event_pair(1, "registeruser");
   const event_pair kWarblePair = event_pair(2, "warble");
   const event_pair kFollowPair = event_pair(3, "follow");
@@ -88,6 +92,6 @@ class CommandLineHandler {
   const event_pair kProfilePair = event_pair(5, "profile");
 };
 
-}  // command_line
+}  // namespace command_line
 
-#endif  // COMMAND_LINE_TOOL_H_
+#endif  // COMMAND_LINE_TOOL_COMMAND_LINE_TOOL_H_
