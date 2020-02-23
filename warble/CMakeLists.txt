@@ -28,6 +28,10 @@ target_link_libraries(warble_func
   ${GLOG_LIBRARIES}
   kvstore_client)
 
+# Compiles warble proto as a library
+add_library(warble_proto_lib ${warble_proto_srcs})
+target_link_libraries(warble_proto_lib ${_PROTOBUF_LIBPROTOBUF})
+
 # Google test
 add_executable(warble_func_test warble_func_test.cc)
 target_link_libraries(warble_func_test

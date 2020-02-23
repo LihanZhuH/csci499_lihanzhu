@@ -1,5 +1,3 @@
-include(FindPackageHandleStandardArgs)
-
 if (NOT DEFINED GTEST_ROOT)
 #     message("-- Setting GTEST_ROOT========================")
     set (GTEST_ROOT /usr /usr/local /usr/include/)

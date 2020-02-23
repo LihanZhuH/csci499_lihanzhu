@@ -1,5 +1,3 @@
-include(FindPackageHandleStandardArgs)
-
 if (NOT DEFINED GFLAGS_ROOT)
 #     message("-- Setting GFLAGS_ROOT")
     set (GFLAGS_ROOT /usr /usr/local /usr/include/)

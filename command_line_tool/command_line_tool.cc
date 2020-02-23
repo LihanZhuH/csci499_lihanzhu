@@ -34,17 +34,17 @@ bool CommandLineHandler::Init() {
 
 bool CommandLineHandler::Run() {
   // Check each combination of arguments
-  if (ValidHookCmd()) {
+  if (IsValidHookCommand()) {
     return Init();
-  } else if (ValidRegCmd()) {
+  } else if (IsValidRegisterCommand()) {
     return SendRegisteruser();
-  } else if (ValidWarbleCmd()) {
+  } else if (IsValidWarbleCommand()) {
     return SendWarble();
-  } else if (ValidFollowCmd()) {
+  } else if (IsValidFollowCommand()) {
     return SendFollow();
-  } else if (ValidReadCmd()) {
+  } else if (IsValidReadCommand()) {
     return SendRead();
-  } else if (ValidProfileCmd()) {
+  } else if (IsValidProfileCommand()) {
     return SendProfile();
   } else {
     LOG(WARNING) << "CommandLine: Received INVALID OPTION";
@@ -52,7 +52,7 @@ bool CommandLineHandler::Run() {
   }
 }
 
-bool CommandLineHandler::ValidRegCmd() {
+bool CommandLineHandler::IsValidRegisterCommand() {
   if (FLAGS_registeruser.empty()) {
     return false;
   }
@@ -64,7 +64,7 @@ bool CommandLineHandler::ValidRegCmd() {
   return true;
 }
 
-bool CommandLineHandler::ValidWarbleCmd() {
+bool CommandLineHandler::IsValidWarbleCommand() {
   if (FLAGS_user.empty() || FLAGS_warble.empty()) {
     return false;
   }
@@ -75,7 +75,7 @@ bool CommandLineHandler::ValidWarbleCmd() {
   return true;
 }
 
-bool CommandLineHandler::ValidFollowCmd() {
+bool CommandLineHandler::IsValidFollowCommand() {
   if (FLAGS_user.empty() || FLAGS_follow.empty()) {
     return false;
   }
@@ -86,7 +86,7 @@ bool CommandLineHandler::ValidFollowCmd() {
   return true;
 }
 
-bool CommandLineHandler::ValidReadCmd() {
+bool CommandLineHandler::IsValidReadCommand() {
   if (FLAGS_user.empty() || FLAGS_read.empty()) {
     return false;
   }
@@ -97,7 +97,7 @@ bool CommandLineHandler::ValidReadCmd() {
   return true;
 }
 
-bool CommandLineHandler::ValidProfileCmd() {
+bool CommandLineHandler::IsValidProfileCommand() {
   if (FLAGS_user.empty() || !FLAGS_profile) {
     return false;
   }
@@ -109,7 +109,7 @@ bool CommandLineHandler::ValidProfileCmd() {
   return true;
 }
 
-bool CommandLineHandler::ValidHookCmd() {
+bool CommandLineHandler::IsValidHookCommand() {
   if (!FLAGS_hook) {
     return false;
   }

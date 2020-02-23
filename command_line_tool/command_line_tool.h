@@ -37,27 +37,27 @@ class CommandLineHandler {
 
  private:
   // Defines a pair with event_type and event_function name
-  typedef std::pair<int, std::string> event_pair;
+  typedef std::pair<int, std::string> EventPair;
 
   // -- Flag validation helper functions --
 
   // Returns true if flags are for REGISTER
-  bool ValidRegCmd();
+  bool IsValidRegisterCommand();
 
   // Returns true if flags are for NEW_WARBLE
-  bool ValidWarbleCmd();
+  bool IsValidWarbleCommand();
 
   // Returns true if flags are for FOLLOW
-  bool ValidFollowCmd();
+  bool IsValidFollowCommand();
 
   // Returns true if flags are for READ_WARBLE
-  bool ValidReadCmd();
+  bool IsValidReadCommand();
 
   // Returns true if flags are for READ_WARBLE
-  bool ValidProfileCmd();
+  bool IsValidProfileCommand();
 
   // Return true if flags are for hook
-  bool ValidHookCmd();
+  bool IsValidHookCommand();
 
   // -- Communication helper functions --
 
@@ -84,12 +84,12 @@ class CommandLineHandler {
   // Pointer to Func client that communicates to Func server
   std::shared_ptr<func::FuncClientAbstract> func_client_;
 
-  // Stores event_pairs as constants
-  const event_pair kRegisteruserPair = event_pair(1, "registeruser");
-  const event_pair kWarblePair = event_pair(2, "warble");
-  const event_pair kFollowPair = event_pair(3, "follow");
-  const event_pair kReadPair = event_pair(4, "read");
-  const event_pair kProfilePair = event_pair(5, "profile");
+  // Stores EventPairs as constants
+  const EventPair kRegisteruserPair = EventPair(1, "registeruser");
+  const EventPair kWarblePair = EventPair(2, "warble");
+  const EventPair kFollowPair = EventPair(3, "follow");
+  const EventPair kReadPair = EventPair(4, "read");
+  const EventPair kProfilePair = EventPair(5, "profile");
 };
 
 }  // namespace command_line

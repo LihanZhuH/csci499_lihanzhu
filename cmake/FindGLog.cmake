@@ -1,5 +1,3 @@
-include(FindPackageHandleStandardArgs)
-
 if (NOT DEFINED GLOG_ROOT)
 #     message("-- Setting GLOG_ROOT")
     set (GLOG_ROOT /usr /usr/local /usr/include/)
