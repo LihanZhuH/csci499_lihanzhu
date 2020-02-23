@@ -25,6 +25,15 @@ add_custom_command(
 add_library(event_handler STATIC event_handler.cc event_handler.h)
 target_link_libraries(event_handler kvstore_client warble_func)
 
+# Compiles func_client as a library
+add_library(func_client STATIC
+  func_client.cc func_client.h
+  ${func_proto_srcs} ${func_grpc_srcs})
+target_link_libraries(func_client
+  ${_GRPC_GRPCPP_UNSECURE}
+  ${_PROTOBUF_LIBPROTOBUF}
+  ${GLOG_LIBRARIES})
+
 # Google test
 add_executable(event_handler_test event_handler_test.cc)
 target_link_libraries(event_handler_test
