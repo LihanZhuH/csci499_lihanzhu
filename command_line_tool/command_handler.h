@@ -1,5 +1,5 @@
-#ifndef COMMAND_LINE_COMMAND_HANDLER_H_
-#define COMMAND_LINE_COMMAND_HANDLER_H_
+#ifndef COMMAND_LINE_TOOL_COMMAND_HANDLER_H_
+#define COMMAND_LINE_TOOL_COMMAND_HANDLER_H_
 
 #include <gflags/gflags.h>
 #include <glog/logging.h>
@@ -154,4 +154,4 @@ class ProfileHandler : public Handler {
 
 }  // namespace command_line
 
-#endif  // COMMAND_LINE_COMMAND_HANDLER_H_
+#endif  // COMMAND_LINE_TOOL_COMMAND_HANDLER_H_

@@ -6,6 +6,7 @@
 #include <google/protobuf/any.pb.h>
 
 #include <memory>
+#include <vector>
 #include <string>
 #include <iostream>
 #include <utility>
