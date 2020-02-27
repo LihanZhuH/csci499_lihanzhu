@@ -32,6 +32,9 @@ find_package(GLog REQUIRED)
 # Find gtest
 find_package(GTest REQUIRED)
 
+# Find glog
+find_package(GFlags REQUIRED)
+
 # Include generated *.pb.h files
 include_directories("${CMAKE_CURRENT_BINARY_DIR}")
 
@@ -60,3 +63,4 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
 add_subdirectory(kvstore)
 add_subdirectory(func)
 add_subdirectory(warble)
+add_subdirectory(command_line_tool)
