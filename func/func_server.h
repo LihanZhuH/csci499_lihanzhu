@@ -39,6 +39,7 @@ class FuncServiceImpl final : public func::FuncService::Service {
                      func::EventReply* response);
 
  private:
+  // Handler to process hook, unhook and event requests
   EventHandler event_handler_;
 };
 

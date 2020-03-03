@@ -4,7 +4,7 @@
 
 namespace kvstore {
 
-// - Implementation of KVStoreWarbleClient -
+// -- Implementation of KVStoreWarbleClient --
 
 bool KVStoreWarbleClient::Put(const std::string& key,
                               const std::string& value) {
@@ -71,7 +71,7 @@ bool KVStoreWarbleClient::KeyExists(const std::string& key) {
   return key_exists;
 }
 
-// - Implementation of KVStoreTestClient -
+// -- Implementation of KVStoreTestClient --
 
 bool KVStoreTestClient::Put(const std::string& key,
                             const std::string& value) {

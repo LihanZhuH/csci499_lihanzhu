@@ -9,6 +9,7 @@ bool CommandLineTool::Run() {
       return handler->ProcessCommand();
     }
   }
+  std::cout << "Invalid Command!" << std::endl;
   return false;
 }
 
