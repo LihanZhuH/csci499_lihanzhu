@@ -4,7 +4,7 @@
 
 namespace kvstore {
 
-// Implementation of KVStoreWarbleClient
+// - Implementation of KVStoreWarbleClient -
 
 bool KVStoreWarbleClient::Put(const std::string& key,
                               const std::string& value) {
@@ -28,7 +28,7 @@ std::vector<std::string> KVStoreWarbleClient::Get(const std::string& key) {
   GetReply kv_reply;
   std::vector<std::string> result;
 
-   // Set up request
+  // Set up request
   auto stream = stub_->Get(&kv_context);
   kv_request.set_key(key);
   stream->Write(kv_request);
@@ -71,7 +71,7 @@ bool KVStoreWarbleClient::KeyExists(const std::string& key) {
   return key_exists;
 }
 
-// Implementation of KVStoreTestClient
+// - Implementation of KVStoreTestClient -
 
 bool KVStoreTestClient::Put(const std::string& key,
                             const std::string& value) {
@@ -108,4 +108,4 @@ bool KVStoreTestClient::KeyExists(const std::string& key) {
   return true;
 }
 
-}  // kvstore
+}  // namespace kvstore

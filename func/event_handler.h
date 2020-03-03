@@ -1,5 +1,8 @@
-#ifndef EVENT_HANDLER_H
-#define EVENT_HANDLER_H
+#ifndef FUNC_EVENT_HANDLER_H_
+#define FUNC_EVENT_HANDLER_H_
+
+#include <glog/logging.h>
+#include <google/protobuf/any.pb.h>
 
 #include <string>
 #include <any>
@@ -8,9 +11,7 @@
 #include <mutex>
 #include <memory>
 #include <optional>
-
-#include <glog/logging.h>
-#include <google/protobuf/any.pb.h>
+#include <utility>
 
 #include "warble/warble_func.h"
 #include "warble/warble.pb.h"
@@ -23,13 +24,13 @@ namespace func {
 class EventHandler {
  public:
   // Default constructor
-  EventHandler(std::shared_ptr<kvstore::KVStoreClientAbstract> client)
+  explicit EventHandler(std::shared_ptr<kvstore::KVStoreClientAbstract> client)
      : event_map_(),
        event_function_set_({kRegisteruser, kWarble, kFollow, kRead, kProfile}),
        map_mutex_(),
        warble_func_(client) {}
   ~EventHandler() {}
-  
+
   // Disable move and copy
   EventHandler(const EventHandler&) = delete;
   EventHandler& operator=(const EventHandler&) = delete;
@@ -70,4 +71,4 @@ class EventHandler {
 
 }  // namespace func
 
-#endif  // EVENT_HANDLER_H
+#endif  // FUNC_EVENT_HANDLER_H_

@@ -1,39 +1,28 @@
+#include <grpcpp/grpcpp.h>
+
 #include <iostream>
 #include <memory>
 
-#include <grpcpp/grpcpp.h>
-
-#include "kvstore.grpc.pb.h"
-
-using grpc::Channel;
-using grpc::ClientContext;
-using grpc::Status;
-using kvstore::KeyValueStore;
-using kvstore::PutRequest;
-using kvstore::PutReply;
-using kvstore::GetReply;
-using kvstore::GetRequest;
-using kvstore::RemoveRequest;
-using kvstore::RemoveReply;
+#include "kvstore/kvstore.grpc.pb.h"
 
 namespace kvstore {
 
 // Client functionalities
 class KeyValueStoreClient {
  public:
-  KeyValueStoreClient(std::shared_ptr<Channel> channel)
+  explicit KeyValueStoreClient(std::shared_ptr<grpc::Channel> channel)
       : stub_(KeyValueStore::NewStub(channel)) {}
-  
+
   // Test with simple put and get
   void TestPut(std::string key, std::string value) {
     {
-      ClientContext context;
+      grpc::ClientContext context;
       PutRequest request;
       PutReply reply;
       request.set_key(key);
       request.set_value(value);
 
-      Status status = stub_->Put(&context, request, &reply);
+      grpc::Status status = stub_->Put(&context, request, &reply);
       if (status.ok()) {
         std::cout << "Put succeeded" << std::endl;
       } else {
@@ -43,7 +32,7 @@ class KeyValueStoreClient {
 
     // Check using get
     {
-      ClientContext context;
+      grpc::ClientContext context;
       auto stream = stub_->Get(&context);
 
       GetRequest request;

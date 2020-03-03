@@ -1,10 +1,10 @@
 #include "warble/warble_func.h"
 
+#include <gtest/gtest.h>
+
 #include <unordered_map>
 #include <string>
 #include <vector>
-
-#include <gtest/gtest.h>
 
 #include "warble/warble.pb.h"
 #include "kvstore/kvstore_client.h"
@@ -14,7 +14,7 @@
 class WarbleFuncBasicTest : public ::testing::Test {
  protected:
   void SetUp() override {
-    std::unordered_map<std::string, std::vector<std::string>> storage = 
+    std::unordered_map<std::string, std::vector<std::string>> storage =
         {{"U:TEST_0", {""}},
          {"U:TEST_00", {""}}};
     client_ = std::shared_ptr<kvstore::KVStoreClientAbstract>
@@ -190,7 +190,7 @@ TEST_F(WarbleFuncBasicTest, UnknownProfile) {
 class WarbleFuncComplexTest : public ::testing::Test {
  protected:
   void SetUp() override {
-    std::unordered_map<std::string, std::vector<std::string>> storage = 
+    std::unordered_map<std::string, std::vector<std::string>> storage =
         {{"U:TEST_0", {"FI:TEST_00"}},
          {"U:TEST_00", {"FE:TEST_0"}}};
     client_ = std::shared_ptr<kvstore::KVStoreClientAbstract>

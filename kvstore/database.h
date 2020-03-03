@@ -1,5 +1,5 @@
-#ifndef DATABASE_H_
-#define DATABASE_H_
+#ifndef KVSTORE_DATABASE_H_
+#define KVSTORE_DATABASE_H_
 
 #include <unordered_map>
 #include <string>
@@ -10,7 +10,7 @@
 namespace kvstore {
 
 // Database storage for thread-safe put, get, and remove
-// Keys and values are std::string
+// Supports multiple entries with the same key
 class DataBase {
  public:
   // Initialize map and mutex
@@ -27,8 +27,8 @@ class DataBase {
 
   // Return an optional with all values corresponding to 'key'
   // Optional is null if no key found
-  std::optional<std::vector<std::string>>
-  GetFromStorage(const std::string &key);
+  std::optional<std::vector<std::string>> GetFromStorage
+      (const std::string &key);
 
   // Remove key in storage
   // Return true if key exists, false otherwise
@@ -44,4 +44,4 @@ class DataBase {
 
 }  // namespace kvstore
 
-#endif  // DATABASE_H_
+#endif  // KVSTORE_DATABASE_H_

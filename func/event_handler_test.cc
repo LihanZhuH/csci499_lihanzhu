@@ -1,9 +1,10 @@
 #include "func/event_handler.h"
 
+#include <gtest/gtest.h>
+
 #include <memory>
 #include <unordered_map>
-
-#include <gtest/gtest.h>
+#include <vector>
 
 #include "kvstore/kvstore_client.h"
 
@@ -51,7 +52,7 @@ TEST_F(EventHandlerBasicTest, EventCallOnInvalidFunction) {
 class EventHandlerComplexTest : public ::testing::Test {
  protected:
   void SetUp() override {
-    std::unordered_map<std::string, std::vector<std::string>> storage = 
+    std::unordered_map<std::string, std::vector<std::string>> storage =
         {{"U:TEST_0", {""}},
          {"U:TEST_00", {""}}};
     client_ = std::make_shared<kvstore::KVStoreTestClient>(storage);

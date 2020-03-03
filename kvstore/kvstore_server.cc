@@ -1,39 +1,24 @@
-// kvstore_server.cc
-
-#include "kvstore_server.h"
-
-#include <iostream>
+#include "kvstore/kvstore_server.h"
 
 #include <glog/logging.h>
 
-using grpc::Server;
-using grpc::ServerBuilder;
-using grpc::ServerContext;
-using grpc::ServerReaderWriter;
-using grpc::Status;
-using kvstore::KeyValueStore;
-using kvstore::PutRequest;
-using kvstore::PutReply;
-using kvstore::GetReply;
-using kvstore::GetRequest;
-using kvstore::RemoveRequest;
-using kvstore::RemoveReply;
+#include <iostream>
+#include <memory>
 
 namespace kvstore {
 
-Status KeyValueStoreImpl::Put(ServerContext* context,
-                              const PutRequest* request,
-                              PutReply* response) {
+grpc::Status KeyValueStoreImpl::Put(grpc::ServerContext* context,
+    const PutRequest* request, PutReply* response) {
   LOG(INFO) << "kvstore_server - Put: " << request->key() << ", "
             << request->value();
   if (db_.PutIntoStorage(request->key(), request->value())) {
-    return Status::OK;
+    return grpc::Status::OK;
   }
-  return Status::CANCELLED;
+  return grpc::Status::CANCELLED;
 }
 
-Status KeyValueStoreImpl::Get(ServerContext* context,
-                              ServerReaderWriter<GetReply, GetRequest>* stream) {
+grpc::Status KeyValueStoreImpl::Get(grpc::ServerContext* context,
+    grpc::ServerReaderWriter<GetReply, GetRequest>* stream) {
   GetRequest request;
   stream->Read(&request);
   GetReply reply;
@@ -45,18 +30,17 @@ Status KeyValueStoreImpl::Get(ServerContext* context,
       stream->Write(reply);
       LOG(INFO) << "kvstore_server - Get: " << request.key() << ", " << value;
     }
-    return Status::OK;
+    return grpc::Status::OK;
   }
-  return Status::CANCELLED;
+  return grpc::Status::CANCELLED;
 }
 
-Status KeyValueStoreImpl::Remove(ServerContext* context,
-                                 const RemoveRequest* request,
-                                 RemoveReply* response) {
+grpc::Status KeyValueStoreImpl::Remove(grpc::ServerContext* context,
+    const RemoveRequest* request, RemoveReply* response) {
   if (db_.RemoveFromStorage(request->key())) {
-    return Status::OK;
+    return grpc::Status::OK;
   }
-  return Status::CANCELLED;
+  return grpc::Status::CANCELLED;
 }
 
 // Run the server listening on port 50001
@@ -64,11 +48,11 @@ void RunServer() {
   std::string server_address("0.0.0.0:50001");
   kvstore::KeyValueStoreImpl service;
 
-  ServerBuilder builder;
+  grpc::ServerBuilder builder;
   builder.AddListeningPort(server_address, grpc::InsecureServerCredentials());
   builder.RegisterService(&service);
 
-  std::unique_ptr<Server> server(builder.BuildAndStart());
+  std::unique_ptr<grpc::Server> server(builder.BuildAndStart());
   std::cout << "Server listening on " << server_address << std::endl;
 
   server->Wait();

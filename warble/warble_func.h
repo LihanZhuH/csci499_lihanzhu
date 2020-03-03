@@ -1,11 +1,12 @@
-#ifndef WARBLE_FUNC_H_
-#define WARBLE_FUNC_H_
+#ifndef WARBLE_WARBLE_FUNC_H_
+#define WARBLE_WARBLE_FUNC_H_
+
+#include <sys/time.h>
 
 #include <string>
 #include <memory>
 #include <vector>
 #include <queue>
-#include <sys/time.h>
 
 #include "warble/warble.pb.h"
 #include "kvstore/kvstore_client.h"
@@ -18,7 +19,7 @@ namespace warble {
 class WarbleFunc {
  public:
   // Constructor that requires a pointer to KVStore client
-  WarbleFunc(std::shared_ptr<kvstore::KVStoreClientAbstract> client)
+  explicit WarbleFunc(std::shared_ptr<kvstore::KVStoreClientAbstract> client)
       : kvstore_client_(client), warble_cnt_(0) {}
 
   // Disable move and copy
@@ -60,6 +61,6 @@ class WarbleFunc {
   const std::string kTimestampUsec = "TU:";
 };
 
-}  // warble
+}  // namespace warble
 
-#endif  // WARBLE_FUNC_H_
+#endif  // WARBLE_WARBLE_FUNC_H_

@@ -1,53 +1,64 @@
-#include "database.h"
+#include "kvstore/database.h"
 
 #include <gtest/gtest.h>
 
-// Test of Database Put and Get functionalities
-TEST(DatabaseTest, PutAndGet) {
-  {
-    // Putting two entries with the same key
-    // Should not allow the second put
-    kvstore::DataBase db;
-    EXPECT_TRUE(db.PutIntoStorage("key1", "value1"));
-    EXPECT_FALSE(db.PutIntoStorage("key1", "value2"));
-  }
+// Test fixture with a empty Database object
+class DatabaseTest : public ::testing::Test {
+ protected:
+  void SetUp() override {}
 
-  {
-    // Putting and getting with the same key
-    kvstore::DataBase db;
-    EXPECT_TRUE(db.PutIntoStorage("key1", "value1"));
-    auto value_opt = db.GetFromStorage("key1");
-    ASSERT_TRUE(value_opt);
-    EXPECT_EQ((*value_opt)[0], "value1");
-  }
+  kvstore::DataBase db_;
+};
 
-  {
-    // Putting and getting with a different key
-    kvstore::DataBase db;
-    bool success;
-    EXPECT_TRUE(db.PutIntoStorage("key1", "value1"));
-    auto value_opt = db.GetFromStorage("key2");
-    ASSERT_FALSE(value_opt);
-  }
+// Putting only one key value pair
+// Should return true
+TEST_F(DatabaseTest, BasicPut) {
+  ASSERT_TRUE(db_.PutIntoStorage("key1", "value1"));
 }
 
-// Test of Database Put and Remove functionalities
-TEST(DatabaseTest, PutAndRemove) {
-  {
-    // Putting and removing with the same key
-    kvstore::DataBase db;
-    bool success;
-    EXPECT_TRUE(db.PutIntoStorage("key1", "value1"));
-    EXPECT_TRUE(db.RemoveFromStorage("key1"));
+// Putting two entries with same key but different values
+// Should return true
+TEST_F(DatabaseTest, PutSameKeyDifferntValue) {
+  ASSERT_TRUE(db_.PutIntoStorage("key1", "value1"));
+  ASSERT_TRUE(db_.PutIntoStorage("key1", "value2"));
+}
 
-    auto value_opt = db.GetFromStorage("key1");
-    ASSERT_FALSE(value_opt);
-  }
+// Putting two entries with same key and same value
+// Should return false
+TEST_F(DatabaseTest, PutSameKeyValueTwice) {
+  ASSERT_TRUE(db_.PutIntoStorage("key1", "value1"));
+  ASSERT_FALSE(db_.PutIntoStorage("key1", "value1"));
+}
 
-  {
-    // Putting and removing with a different key
-    kvstore::DataBase db;
-    EXPECT_TRUE(db.PutIntoStorage("key1", "value1"));
-    EXPECT_FALSE(db.RemoveFromStorage("key2"));
-  }
+// Getting the value from existing key
+// Should return true
+TEST_F(DatabaseTest, GetCorrectKey) {
+  ASSERT_TRUE(db_.PutIntoStorage("key1", "value1"));
+  auto value_opt = db_.GetFromStorage("key1");
+  ASSERT_TRUE(value_opt);
+  ASSERT_EQ((*value_opt)[0], "value1");
+}
+
+// Getting the value from non-existing key
+// Should return false
+TEST_F(DatabaseTest, GetWrongKey) {
+  auto value_opt = db_.GetFromStorage("key1");
+  ASSERT_FALSE(value_opt);
+}
+
+// Removing correct key
+// Should return true
+TEST_F(DatabaseTest, RemoveCorrectKey) {
+  ASSERT_TRUE(db_.PutIntoStorage("key1", "value1"));
+  ASSERT_TRUE(db_.RemoveFromStorage("key1"));
+
+  // Should not be able to get key
+  auto value_opt = db_.GetFromStorage("key1");
+  ASSERT_FALSE(value_opt);
+}
+
+// Removing wrong key
+// Should return false
+TEST_F(DatabaseTest, RemoveWrongKey) {
+  ASSERT_FALSE(db_.RemoveFromStorage("key1"));
 }

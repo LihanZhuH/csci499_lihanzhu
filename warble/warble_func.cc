@@ -1,4 +1,4 @@
-#include "warble_func.h"
+#include "warble/warble_func.h"
 
 #include <glog/logging.h>
 
@@ -27,10 +27,10 @@ bool WarbleFunc::NewWarble(const WarbleRequest& request,
   std::string username = kUsername + request.username();
   std::string text = kText + request.text();
   std::string parent_id = kReplyTo + request.parent_id();
-  
+
   // Get current time
   timeval tv;
-  gettimeofday(&tv,NULL);
+  gettimeofday(&tv, NULL);
   std::string seconds = kTimestampSec + std::to_string(tv.tv_sec);
   std::string useconds = kTimestampUsec + std::to_string(tv.tv_usec);
 
@@ -66,7 +66,7 @@ bool WarbleFunc::NewWarble(const WarbleRequest& request,
       return false;
     }
   }
-  
+
   // Allocate a new Warble and a new timestamp
   Warble* new_warble = new Warble();
   Timestamp* new_time = new Timestamp();
@@ -77,7 +77,7 @@ bool WarbleFunc::NewWarble(const WarbleRequest& request,
   new_warble->set_parent_id(request.parent_id());
   new_time->set_seconds(tv.tv_sec);
   new_time->set_useconds(tv.tv_usec);
-  
+
   new_warble->set_allocated_timestamp(new_time);
   response->set_allocated_warble(new_warble);
 
@@ -128,7 +128,7 @@ bool WarbleFunc::Read(const ReadRequest& request, ReadReply* response) {
     Warble* new_warble = response->add_warbles();  // From repeated field
     new_warble->set_id(front_id);
     Timestamp* new_time = new Timestamp();  // Pre-allocated timestamp
-    
+
     // Read all data of this warble and get replies
     std::string value, qualifier, content;
     for (auto value : value_vec) {
@@ -189,4 +189,4 @@ bool WarbleFunc::Profile(const ProfileRequest& request,
   return true;
 }
 
-}  // warble
+}  // namespace warble
