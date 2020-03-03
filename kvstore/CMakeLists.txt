@@ -1,7 +1,5 @@
 cmake_minimum_required(VERSION 3.5.1)
 
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
-
 # Proto file path
 get_filename_component(kv_proto "../protos/kvstore.proto" ABSOLUTE)
 get_filename_component(kv_proto_path "${kv_proto}" PATH)

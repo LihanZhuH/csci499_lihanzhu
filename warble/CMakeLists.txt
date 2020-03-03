@@ -1,7 +1,5 @@
 cmake_minimum_required(VERSION 3.5.1)
 
-# set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
-
 # Proto file path
 get_filename_component(warble_proto "../protos/warble.proto" ABSOLUTE)
 get_filename_component(warble_proto_path "${warble_proto}" PATH)
@@ -40,7 +38,3 @@ target_link_libraries(warble_func_test
   ${GLOG_LIBRARIES}
   warble_func
   gtest gtest_main pthread)
-
-# add_custom_target(run ALL
-#                   DEPENDS ${warble_proto_srcs}
-#                           ${warble_proto_hdrs})
