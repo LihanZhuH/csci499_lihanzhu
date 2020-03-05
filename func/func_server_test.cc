@@ -1,8 +1,8 @@
-#include <iostream>
-
 #include <grpcpp/grpcpp.h>
 #include <glog/logging.h>
 #include <google/protobuf/any.pb.h>
+
+#include <iostream>
 
 #include "func/func.grpc.pb.h"
 #include "func/func.pb.h"
@@ -13,7 +13,7 @@ namespace func {
 // Act as a client to Func server
 class FuncServiceClient {
  public:
-  FuncServiceClient(std::shared_ptr<grpc::Channel> channel)
+  explicit FuncServiceClient(std::shared_ptr<grpc::Channel> channel)
       : stub_(FuncService::NewStub(channel)) {}
 
   // Test of hook
@@ -66,15 +66,6 @@ class FuncServiceClient {
     grpc::ClientContext context;
     func::EventRequest request;
     func::EventReply reply;
-
-    // Allocated
-    // google::protobuf::Any* payload = new google::protobuf::Any();
-    // warble::RegisteruserRequest register_request;
-    // register_request.set_username("TEST_0");
-    // payload->PackFrom(register_request);
-    // request.set_event_type(event_type);
-    // request.set_allocated_payload(payload);
-    // LOG(INFO) << "TestEvent: done allocated payload";
 
     // Copy from
     google::protobuf::Any payload = google::protobuf::Any();

@@ -40,25 +40,6 @@ include_directories("${CMAKE_CURRENT_BINARY_DIR}")
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
 
-# Generate targets
-# foreach(_target
-#   kvstore_server func_server)
-#   add_executable(${_target} "${_target}.cc"
-#     ${kv_proto_srcs}
-#     ${kv_grpc_srcs})
-#   target_link_libraries(${_target}
-#     ${_GRPC_GRPCPP_UNSECURE}
-#     ${_PROTOBUF_LIBPROTOBUF}
-#     database
-#     ${GLOG_LIBRARIES})
-# endforeach()
-
-# add_custom_target(run ALL
-#                   DEPENDS ${func_proto_srcs}
-#                           ${func_proto_hdrs}
-#                           ${func_grpc_srcs}
-#                           ${func_grpc_hdrs})
-
 # Adds subdirectories
 add_subdirectory(kvstore)
 add_subdirectory(func)

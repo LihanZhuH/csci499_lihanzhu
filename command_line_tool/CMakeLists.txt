@@ -2,8 +2,6 @@ cmake_minimum_required(VERSION 3.5.1)
 
 include_directories(${PROJECT_SOURCE_DIR}/func)
 
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
-
 # Compiles command_handler as a library
 add_library(command_handler STATIC
   command_handler.cc command_handler.h)

@@ -1,7 +1,5 @@
 cmake_minimum_required(VERSION 3.5.1)
 
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
-
 # Proto file path
 get_filename_component(func_proto "../protos/func.proto" ABSOLUTE)
 get_filename_component(func_proto_path "${func_proto}" PATH)

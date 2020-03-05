@@ -1,9 +1,10 @@
 #include "func/event_handler.h"
 
+#include <gtest/gtest.h>
+
 #include <memory>
 #include <unordered_map>
-
-#include <gtest/gtest.h>
+#include <vector>
 
 #include "kvstore/kvstore_client.h"
 
@@ -22,26 +23,26 @@ class EventHandlerBasicTest : public ::testing::Test {
 
 // Hooking a new function
 // Should return true
-TEST_F(EventHandlerBasicTest, BasicHook) {
+TEST_F(EventHandlerBasicTest, HookValidFunctionShouldSucceed) {
   EXPECT_TRUE(event_handler_->Hook(1, "registeruser"));
   EXPECT_TRUE(event_handler_->Hook(2, "warble"));
 }
 
 // Hooking invalid function name
 // Should return false
-TEST_F(EventHandlerBasicTest, HookInvalidFunction) {
+TEST_F(EventHandlerBasicTest, HookInvalidFunctionShouldFail) {
   EXPECT_FALSE(event_handler_->Hook(1, "random"));
 }
 
 // Unhooking an unhooked event
 // Should return false
-TEST_F(EventHandlerBasicTest, UnhookUnknownEvent) {
+TEST_F(EventHandlerBasicTest, UnhookUnknownEventShouldFail) {
   EXPECT_FALSE(event_handler_->Unhook(1));
 }
 
 // Event with unhooked event type
 // Should return false
-TEST_F(EventHandlerBasicTest, EventCallOnInvalidFunction) {
+TEST_F(EventHandlerBasicTest, EventCallOnInvalidFunctionShouldFail) {
   google::protobuf::Any payload;
   EXPECT_FALSE(event_handler_->Event(1, payload));
 }
@@ -51,7 +52,7 @@ TEST_F(EventHandlerBasicTest, EventCallOnInvalidFunction) {
 class EventHandlerComplexTest : public ::testing::Test {
  protected:
   void SetUp() override {
-    std::unordered_map<std::string, std::vector<std::string>> storage = 
+    std::unordered_map<std::string, std::vector<std::string>> storage =
         {{"U:TEST_0", {""}},
          {"U:TEST_00", {""}}};
     client_ = std::make_shared<kvstore::KVStoreTestClient>(storage);
@@ -65,25 +66,25 @@ class EventHandlerComplexTest : public ::testing::Test {
 
 // Hooking an existing event type
 // Should return false
-TEST_F(EventHandlerComplexTest, HookExistingEventType) {
+TEST_F(EventHandlerComplexTest, HookExistingEventTypeShouldFail) {
   EXPECT_FALSE(event_handler_->Hook(1, "warble"));
 }
 
 // Hooking an existing event function
 // Should return true
-TEST_F(EventHandlerComplexTest, HookExistingEventFunc) {
+TEST_F(EventHandlerComplexTest, HookExistingEventFuncShouldSucceed) {
   EXPECT_TRUE(event_handler_->Hook(2, "warble"));
 }
 
 // Unhooking an existing event type
 // Should return true
-TEST_F(EventHandlerComplexTest, UnhookExistingEventType) {
+TEST_F(EventHandlerComplexTest, UnhookExistingEventTypeShouldSucceed) {
   EXPECT_TRUE(event_handler_->Unhook(1));
 }
 
 // Making a Register function call
 // Should succeed
-TEST_F(EventHandlerComplexTest, EventCall) {
+TEST_F(EventHandlerComplexTest, EventCallShouldSucceed) {
   google::protobuf::Any payload;
   // Set up request
   warble::RegisteruserRequest request;
@@ -101,7 +102,7 @@ TEST_F(EventHandlerComplexTest, EventCall) {
 
 // Post a new warble using event handler
 // Should succeed
-TEST_F(EventHandlerComplexTest, EventHookAndWarble) {
+TEST_F(EventHandlerComplexTest, EventHookAndWarbleShouldSucceed) {
   // Hook Warble
   ASSERT_TRUE(event_handler_->Hook(2, "warble"));
 

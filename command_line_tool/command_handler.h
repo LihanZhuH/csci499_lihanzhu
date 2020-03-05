@@ -19,7 +19,7 @@ namespace command_line {
 // Must call IsValidCommand() before ProcessCommand()
 class Handler {
  public:
-  // Default constructor
+  // Default constructor that requires a pointer to Func client
   explicit Handler(std::shared_ptr<func::FuncClientAbstract> client)
       : func_client_(client) {}
 

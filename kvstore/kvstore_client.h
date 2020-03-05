@@ -1,13 +1,13 @@
-#ifndef KVSTORE_CLIENT_
-#define KVSTORE_CLIENT_
+#ifndef KVSTORE_KVSTORE_CLIENT_H_
+#define KVSTORE_KVSTORE_CLIENT_H_
+
+#include <grpcpp/grpcpp.h>
 
 #include <string>
 #include <vector>
 #include <optional>
 #include <memory>
 #include <unordered_map>
-
-#include <grpcpp/grpcpp.h>
 
 #include "kvstore/kvstore.grpc.pb.h"
 #include "kvstore/kvstore.pb.h"
@@ -36,13 +36,13 @@ class KVStoreClientAbstract {
 // KVStore client that communicates with GRPC server
 class KVStoreWarbleClient : public KVStoreClientAbstract {
  public:
-  KVStoreWarbleClient(std::shared_ptr<grpc::Channel> channel)
+  explicit KVStoreWarbleClient(std::shared_ptr<grpc::Channel> channel)
       : stub_(KeyValueStore::NewStub(channel)) {}
 
   // Disable move and copy
   KVStoreWarbleClient(const KVStoreWarbleClient&) = delete;
   KVStoreWarbleClient& operator=(const KVStoreWarbleClient&) = delete;
-  
+
   // Put key and value into KVStore. Success/failure signaled via returned bool
   bool Put(const std::string& key, const std::string& value);
 
@@ -64,8 +64,9 @@ class KVStoreWarbleClient : public KVStoreClientAbstract {
 class KVStoreTestClient : public KVStoreClientAbstract {
  public:
   KVStoreTestClient() {}
-  KVStoreTestClient(const std::unordered_map<std::string, std::vector<std::string>>& storage)
-      : storage_(storage){}
+  explicit KVStoreTestClient
+      (const std::unordered_map<std::string, std::vector<std::string>>& s)
+      : storage_(s) {}
 
   // Disable move and copy
   KVStoreTestClient(const KVStoreTestClient&) = delete;
@@ -88,6 +89,6 @@ class KVStoreTestClient : public KVStoreClientAbstract {
   std::unordered_map<std::string, std::vector<std::string>> storage_;
 };
 
-}  // kvstore
+}  // namespace kvstore
 
-#endif  // KVSTORE_CLIENT_
+#endif  // KVSTORE_KVSTORE_CLIENT_H_

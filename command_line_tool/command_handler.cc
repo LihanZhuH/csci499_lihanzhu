@@ -98,7 +98,8 @@ bool WarbleHandler::ProcessCommand() {
 // -- Implementation of FollowHandler --
 
 bool FollowHandler::IsValidCommand() {
-  if (FLAGS_user.empty() || FLAGS_follow.empty()) {
+  if (FLAGS_user.empty() || FLAGS_follow.empty() ||
+      FLAGS_user == FLAGS_follow) {
     return false;
   }
   if (!FLAGS_registeruser.empty() || !FLAGS_reply.empty() ||

@@ -1,12 +1,13 @@
-#ifndef FUNC_CLIENT_H_
-#define FUNC_CLIENT_H_
-
-#include <string>
-#include <optional>
+#ifndef FUNC_FUNC_CLIENT_H_
+#define FUNC_FUNC_CLIENT_H_
 
 #include <grpcpp/grpcpp.h>
 #include <glog/logging.h>
 #include <google/protobuf/any.pb.h>
+
+#include <string>
+#include <optional>
+#include <memory>
 
 #include "func/func.grpc.pb.h"
 #include "func/func.pb.h"
@@ -28,7 +29,7 @@ class FuncClientAbstract {
   // Unhook an event type
   // Success/failure signaled via returned bool
   virtual bool Unhook(int event_type) = 0;
-  
+
   // Execute the function with the event type and payload
   // Return the reply payload
   virtual std::optional<google::protobuf::Any> Event(int event_type,
@@ -40,13 +41,13 @@ class FuncClientAbstract {
 class FuncClientImpl : public FuncClientAbstract {
  public:
   // Constructor: require a gRPC channel to connect to
-  FuncClientImpl(std::shared_ptr<grpc::Channel> channel)
+  explicit FuncClientImpl(std::shared_ptr<grpc::Channel> channel)
       : stub_(FuncService::NewStub(channel)) {}
 
   // Disable move and copy
   FuncClientImpl(const FuncClientImpl&) = delete;
   FuncClientImpl& operator=(const FuncClientImpl&) = delete;
-  
+
   // Hook an event type with an event function
   // Success/failure signaled via returned bool
   bool Hook(int event_type, const std::string& event_function) override;
@@ -67,4 +68,4 @@ class FuncClientImpl : public FuncClientAbstract {
 
 }  // namespace func
 
-#endif
+#endif  // FUNC_FUNC_CLIENT_H_

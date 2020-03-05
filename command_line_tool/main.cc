@@ -13,7 +13,7 @@ int main(int argc, char *argv[]) {
       "localhost:50000", grpc::InsecureChannelCredentials());
   std::shared_ptr<func::FuncClientAbstract> func_client
       (new func::FuncClientImpl(channel));
-  command_line::CommandLineHandler command_line_handler(func_client);
+  command_line::CommandLineTool command_line_handler(func_client);
 
   command_line_handler.Run();
   return 0;
