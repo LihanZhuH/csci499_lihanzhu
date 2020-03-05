@@ -28,8 +28,8 @@ class WarbleFuncBasicTest : public ::testing::Test {
 };
 
 // Registering a new user
-// Should return false
-TEST_F(WarbleFuncBasicTest, SimpleRegister) {
+// Should return true
+TEST_F(WarbleFuncBasicTest, SimpleRegisterShouldSucceed) {
   warble::RegisteruserRequest request;
   warble::RegisteruserReply reply;
   request.set_username("TEST_1");
@@ -38,7 +38,7 @@ TEST_F(WarbleFuncBasicTest, SimpleRegister) {
 
 // Registering an existing user
 // Should return false
-TEST_F(WarbleFuncBasicTest, RegisterExistingUsername) {
+TEST_F(WarbleFuncBasicTest, RegisterExistingUsernameShouldFail) {
   warble::RegisteruserRequest request;
   warble::RegisteruserReply reply;
   request.set_username("TEST_0");
@@ -47,7 +47,7 @@ TEST_F(WarbleFuncBasicTest, RegisterExistingUsername) {
 
 // Registering a user twice
 // The first attempt should return true, and the second one should return false
-TEST_F(WarbleFuncBasicTest, RegisterAUserTwice) {
+TEST_F(WarbleFuncBasicTest, RegisterAUserTwiceShouldFail) {
   warble::RegisteruserRequest request;
   warble::RegisteruserReply reply;
   request.set_username("TEST_1");
@@ -57,7 +57,7 @@ TEST_F(WarbleFuncBasicTest, RegisterAUserTwice) {
 
 // Creating a new warble from existing user
 // Should return true
-TEST_F(WarbleFuncBasicTest, SimpleNewWarble) {
+TEST_F(WarbleFuncBasicTest, SimpleNewWarbleShouldSucceed) {
   warble::WarbleRequest request;
   warble::WarbleReply reply;
   request.set_username("TEST_0");
@@ -71,7 +71,7 @@ TEST_F(WarbleFuncBasicTest, SimpleNewWarble) {
 
 // Creating a new warble from unknown user
 // Should return false
-TEST_F(WarbleFuncBasicTest, NewWarbleFromUnknownUser) {
+TEST_F(WarbleFuncBasicTest, NewWarbleFromUnknownUserShouldFail) {
   warble::WarbleRequest request;
   warble::WarbleReply reply;
   request.set_username("TEST_1");
@@ -81,7 +81,7 @@ TEST_F(WarbleFuncBasicTest, NewWarbleFromUnknownUser) {
 
 // Creating two new warbles from existing user
 // Should return true
-TEST_F(WarbleFuncBasicTest, DoubleNewWarble) {
+TEST_F(WarbleFuncBasicTest, DoubleNewWarbleShouldSucceed) {
   warble::WarbleRequest request;
   warble::WarbleReply reply;
 
@@ -106,7 +106,7 @@ TEST_F(WarbleFuncBasicTest, DoubleNewWarble) {
 
 // Following an existing user
 // Should return true and update info
-TEST_F(WarbleFuncBasicTest, FollowExistingUser) {
+TEST_F(WarbleFuncBasicTest, FollowExistingUserShouldSucceed) {
   warble::FollowRequest request;
   warble::FollowReply reply;
   request.set_username("TEST_0");
@@ -116,7 +116,7 @@ TEST_F(WarbleFuncBasicTest, FollowExistingUser) {
 
 // Following an unknown user
 // Should return false
-TEST_F(WarbleFuncBasicTest, FollowUnknownUser) {
+TEST_F(WarbleFuncBasicTest, FollowUnknownUserShouldFail) {
   warble::FollowRequest request;
   warble::FollowReply reply;
   request.set_username("TEST_0");
@@ -126,7 +126,7 @@ TEST_F(WarbleFuncBasicTest, FollowUnknownUser) {
 
 // Following from an unknown user
 // Should return false
-TEST_F(WarbleFuncBasicTest, UnknownFollowUser) {
+TEST_F(WarbleFuncBasicTest, UnknownFollowUserShouldFail) {
   warble::FollowRequest request;
   warble::FollowReply reply;
   request.set_username("TEST_1");
@@ -136,7 +136,7 @@ TEST_F(WarbleFuncBasicTest, UnknownFollowUser) {
 
 // Reading after posting a new warble
 // Should get the same warble
-TEST_F(WarbleFuncBasicTest, BasicRead) {
+TEST_F(WarbleFuncBasicTest, BasicReadShouldSucceed) {
   warble::WarbleRequest request;
   warble::WarbleReply reply;
   request.set_username("TEST_0");
@@ -156,7 +156,7 @@ TEST_F(WarbleFuncBasicTest, BasicRead) {
 
 // Reading unknown warble
 // Should return false
-TEST_F(WarbleFuncBasicTest, ReadUnknown) {
+TEST_F(WarbleFuncBasicTest, ReadUnknownShouldFail) {
   warble::ReadRequest read_request;
   warble::ReadReply read_reply;
   read_request.set_warble_id("1");
@@ -165,7 +165,7 @@ TEST_F(WarbleFuncBasicTest, ReadUnknown) {
 
 // Getting the profile of an existing user
 // Should get empty follower and following
-TEST_F(WarbleFuncBasicTest, BasicProfile) {
+TEST_F(WarbleFuncBasicTest, BasicProfileShouldSucceed) {
   warble::ProfileRequest request;
   warble::ProfileReply reply;
   request.set_username("TEST_0");
@@ -176,7 +176,7 @@ TEST_F(WarbleFuncBasicTest, BasicProfile) {
 
 // Getting the profile of an unknown user
 // Should return false
-TEST_F(WarbleFuncBasicTest, UnknownProfile) {
+TEST_F(WarbleFuncBasicTest, UnknownProfileShouldFail) {
   warble::ProfileRequest request;
   warble::ProfileReply reply;
   request.set_username("TEST_1");
@@ -212,7 +212,7 @@ class WarbleFuncComplexTest : public ::testing::Test {
 
 // Replying to existing warble
 // Should return true
-TEST_F(WarbleFuncComplexTest, NewWarbleReply) {
+TEST_F(WarbleFuncComplexTest, NewWarbleReplyShouldSucceed) {
   warble::WarbleRequest request;
   warble::WarbleReply reply;
   request.set_username("TEST_0");
@@ -225,7 +225,7 @@ TEST_F(WarbleFuncComplexTest, NewWarbleReply) {
 
 // Replying to existing warble, and read the thread from parent
 // Should return true
-TEST_F(WarbleFuncComplexTest, ReadThread) {
+TEST_F(WarbleFuncComplexTest, ReadThreadShouldSucceed) {
   warble::WarbleRequest request;
   warble::WarbleReply reply;
   request.set_username("TEST_00");

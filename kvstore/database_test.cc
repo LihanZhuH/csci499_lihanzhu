@@ -12,27 +12,27 @@ class DatabaseTest : public ::testing::Test {
 
 // Putting only one key value pair
 // Should return true
-TEST_F(DatabaseTest, BasicPut) {
+TEST_F(DatabaseTest, PutOneValueForAKeyShouldSucceed) {
   ASSERT_TRUE(db_.PutIntoStorage("key1", "value1"));
 }
 
 // Putting two entries with same key but different values
 // Should return true
-TEST_F(DatabaseTest, PutSameKeyDifferntValue) {
+TEST_F(DatabaseTest, PutDifferntValueForSameKeyShouldSucceed) {
   ASSERT_TRUE(db_.PutIntoStorage("key1", "value1"));
   ASSERT_TRUE(db_.PutIntoStorage("key1", "value2"));
 }
 
 // Putting two entries with same key and same value
 // Should return false
-TEST_F(DatabaseTest, PutSameKeyValueTwice) {
+TEST_F(DatabaseTest, PutSameKeyValueTwiceShouldFail) {
   ASSERT_TRUE(db_.PutIntoStorage("key1", "value1"));
   ASSERT_FALSE(db_.PutIntoStorage("key1", "value1"));
 }
 
 // Getting the value from existing key
 // Should return true
-TEST_F(DatabaseTest, GetCorrectKey) {
+TEST_F(DatabaseTest, GetExistingKeyShouldSucceed) {
   ASSERT_TRUE(db_.PutIntoStorage("key1", "value1"));
   auto value_opt = db_.GetFromStorage("key1");
   ASSERT_TRUE(value_opt);
@@ -41,14 +41,14 @@ TEST_F(DatabaseTest, GetCorrectKey) {
 
 // Getting the value from non-existing key
 // Should return false
-TEST_F(DatabaseTest, GetWrongKey) {
+TEST_F(DatabaseTest, GetNonExistingKeyShouldFail) {
   auto value_opt = db_.GetFromStorage("key1");
   ASSERT_FALSE(value_opt);
 }
 
 // Removing correct key
 // Should return true
-TEST_F(DatabaseTest, RemoveCorrectKey) {
+TEST_F(DatabaseTest, RemoveExistingKeyShouldSucceed) {
   ASSERT_TRUE(db_.PutIntoStorage("key1", "value1"));
   ASSERT_TRUE(db_.RemoveFromStorage("key1"));
 
@@ -59,6 +59,6 @@ TEST_F(DatabaseTest, RemoveCorrectKey) {
 
 // Removing wrong key
 // Should return false
-TEST_F(DatabaseTest, RemoveWrongKey) {
+TEST_F(DatabaseTest, RemoveNonExistingKeyShouldFail) {
   ASSERT_FALSE(db_.RemoveFromStorage("key1"));
 }
