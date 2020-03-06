@@ -44,35 +44,14 @@ $ ./user_interface <flag> <argument> ...
 ```
 
 ### Examples:
-1. Register a new user.
-```
-$ ./user_interface --registeruser "New User"
-```
-
-2. Post a new warble.
-```
-$ ./user_interface --user "Existing User" --warble "Hello warble!"
-```
-
-3. Read a warble.
-```
-$ ./user_interface --user "Existing User" --read 1
-```
-
-4. Reply to a warble.
-```
-$ ./user_interface --user "Existing User" --warble "Reply." --reply 1
-```
-
-5. Follow another user.
-```
-$ ./user_interface --user "Existing User" --follow "Another Existing User"
-```
-
-6. See profile.
-```
-$ ./user_interface --user "Existing User" --profile
-```
+Functionalities | Command
+--- | ---
+Register a new user | `$ ./user_interface --registeruser "New User"`
+Post a new warble | `$ ./user_interface --user "Existing User" --warble "Hello warble!"`
+Read a warble | `$ ./user_interface --user "Existing User" --read 1`
+Reply to a warble | `$ ./user_interface --user "Existing User" --warble "Reply." --reply 1`
+Follow another user | `$ ./user_interface --user "Existing User" --follow "Another Existing User"`
+See profile | `$ ./user_interface --user "Existing User" --profile`
 
 ## Running Tests
 
