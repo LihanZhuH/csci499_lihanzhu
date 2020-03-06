@@ -3,84 +3,81 @@
 ### *Author: Lihan Zhu*
 
 ## Environment Setup
-
-### Setting up Vagrant
-1. Install Vagrant. https://www.vagrantup.com/downloads.html
-2. Install VirtualBox. https://www.virtualbox.org/wiki/Downloads
-3. Create a directory and clone this repository.
-```
-$ mkdir cs499_vagrant
-$ cd cs499_vagrant
-$ git clone https://github.com/LihanZhuH/csci499_lihanzhu.git
-```
-4. Initialize and start Vagrant box.
-```
-$ vagrant init hashicorp/bionic64
-$ vagrant up
-$ vagrant ssh
-```
-Now you are all set. The repository should be visible inside VM in directory `/vagrant`. The rest of this tutorial is done in VM.
-
-### Installing Dependencies
-Before installing modules, check updates and install prerequisites.
-```
-$ [sudo] apt-get update
-$ [sudo] apt-get install build-essential autoconf libtool pkg-config
-```
-
-All of the following need to be installed globally.
+You will need a linux environment (e.g. Ubuntu 18.04.) with all of the following installed globally:
 
 1. CMake
-```
-$ sudo apt-get install cmake
-```
 2. gRPC
-```
-$ git clone -b $(curl -L https://grpc.io/release) https://github.com/grpc/grpc
-$ cd grpc
-$ git submodule update --init
-$ make
-$ sudo make install
-```
 3. Protobuf
-```
-$ cd third_party/protobuf
-$ sudo make install
-```
 4. Google Test
-```
-$ cd ../googletest
-$ cmake .
-$ make
-$ sudo make install
-```
 5. gflags
-```
-$ cd ../gflags
-$ cmake .
-$ make
-$ sudo make install
-```
 6. glog
-```
-$ cd /tmp
-$ git clone https://github.com/google/glog.git
-$ cd glog
-$ cmake -H. -Bbuild -G "Unix Makefiles"
-$ cmake --build build
-$ sudo cmake --build build --target install
-```
+
+For installation, please follow [this guide](SETUP.md).
 
 ## Build Instruction
 
-1. In root directory, run:
+1. In root directory of `csci499_lihanzhu`, run:
 ```
-cmake .
-cmake --build .
+$ cmake .
+$ cmake --build .
 ```
-2. All executables are generated in `bin` folder.
+2. All executables will be generated in `bin` folder, including unit tests.
 
 ## Steps to Run
+1. Go to `bin` folder where all executables are generated.
+```
+$ cd bin
+```
 
-1. Start `bin/func_server` and `bin/kvstore_server`.
-2. Run command line user interface `bin/user_interface` (See help with `bin/user_interface --help`).
+2. Always start `func_server` and `kvstore_server` first. In two different terminals, run the servers.
+```
+$ ./func_server
+```
+```
+$ ./kvstore_server
+```
+The servers should start listening to requests.
+
+3. In another terminal, run command line user interface `user_interface` (See help with `user_interface --help`).
+```
+$ ./user_interface <flag> <argument> ... 
+```
+
+### Examples:
+1. Register a new user.
+```
+$ ./user_interface --registeruser "New User"
+```
+
+2. Post a new warble.
+```
+$ ./user_interface --user "Existing User" --warble "Hello warble!"
+```
+
+3. Read a warble.
+```
+$ ./user_interface --user "Existing User" --read 1
+```
+
+4. Reply to a warble.
+```
+$ ./user_interface --user "Existing User" --warble "Reply." --reply 1
+```
+
+5. Follow another user.
+```
+$ ./user_interface --user "Existing User" --follow "Another Existing User"
+```
+
+6. See profile.
+```
+$ ./user_interface --user "Existing User" --profile
+```
+
+## Running Tests
+
+There are three unit tests generated in `bin` folder:
+
+1. `data_base_test` for backend Key-Value Store implementation.
+2. `event_handler_test` for Func infrastructure implementation.
+3. `warble_func_test` for Warble functionality.
