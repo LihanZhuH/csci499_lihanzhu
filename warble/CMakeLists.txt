@@ -38,6 +38,7 @@ target_link_libraries(warble_func_test
   ${_GRPC_GRPCPP_UNSECURE}
   ${_PROTOBUF_LIBPROTOBUF}
   ${CMAKE_THREAD_LIBS_INIT}
+  ${GTEST_LIBRARIES}
   warble_func
   gtest_main
   ${GLOG_LIBRARIES}
