@@ -15,7 +15,7 @@ $ git clone https://github.com/LihanZhuH/csci499_lihanzhu.git
 ```
 4. Initialize and start Vagrant box.
 ```
-$ vagrant init ubuntu/bionic64
+$ vagrant init hashicorp/bionic64
 $ vagrant up
 $ vagrant ssh
 ```

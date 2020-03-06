@@ -24,6 +24,8 @@ add_library(warble_func STATIC
 target_link_libraries(warble_func
   ${_PROTOBUF_LIBPROTOBUF}
   ${GLOG_LIBRARIES}
+  ${GFLAGS_LIBRARIES}
+  ${CMAKE_THREAD_LIBS_INIT}
   kvstore_client)
 
 # Compiles warble proto as a library
@@ -36,5 +38,7 @@ target_link_libraries(warble_func_test
   ${_GRPC_GRPCPP_UNSECURE}
   ${_PROTOBUF_LIBPROTOBUF}
   ${GLOG_LIBRARIES}
+  ${GFLAGS_LIBRARIES}
+  ${CMAKE_THREAD_LIBS_INIT}
   warble_func
   gtest gtest_main pthread)
