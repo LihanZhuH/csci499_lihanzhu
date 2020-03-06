@@ -44,7 +44,7 @@ $ ./user_interface <flag> <argument> ...
 ```
 
 ### Examples:
-Functionalities | Command
+Functionalities | Commands
 --- | ---
 Register a new user | `$ ./user_interface --registeruser "New User"`
 Post a new warble | `$ ./user_interface --user "Existing User" --warble "Hello warble!"`
