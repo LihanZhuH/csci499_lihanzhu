@@ -32,12 +32,17 @@ add_library(func_client STATIC
 target_link_libraries(func_client
   ${_GRPC_GRPCPP_UNSECURE}
   ${_PROTOBUF_LIBPROTOBUF}
-  ${GLOG_LIBRARIES})
+  ${GLOG_LIBRARIES}
+  ${GFLAGS_LIBRARIES}
+  ${CMAKE_THREAD_LIBS_INIT})
 
 # Google test
 add_executable(event_handler_test event_handler_test.cc)
 target_link_libraries(event_handler_test
-  event_handler ${GLOG_LIBRARIES} gtest gtest_main
+  event_handler ${GLOG_LIBRARIES}
+  ${GFLAGS_LIBRARIES}
+  ${CMAKE_THREAD_LIBS_INIT}
+  gtest gtest_main
   -pthread -lprotobuf -lpthread)
 
 # Func server test
@@ -58,4 +63,6 @@ target_link_libraries(func_server
   ${_PROTOBUF_LIBPROTOBUF}
   event_handler
   ${GLOG_LIBRARIES}
+  ${GFLAGS_LIBRARIES}
+  ${CMAKE_THREAD_LIBS_INIT}
   -pthread -lprotobuf -lpthread)

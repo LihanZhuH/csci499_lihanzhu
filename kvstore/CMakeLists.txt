@@ -54,4 +54,6 @@ target_link_libraries(kvstore_server
   ${_GRPC_GRPCPP_UNSECURE}
   ${_PROTOBUF_LIBPROTOBUF}
   database
-  ${GLOG_LIBRARIES})
+  ${GLOG_LIBRARIES}
+  ${GFLAGS_LIBRARIES}
+  ${CMAKE_THREAD_LIBS_INIT})

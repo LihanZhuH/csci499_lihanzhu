@@ -23,6 +23,8 @@ add_library(command_line_tool STATIC
 target_link_libraries(command_line_tool
   func_client command_handler
   ${GLOG_LIBRARIES}
+  ${GFLAGS_LIBRARIES}
+  ${CMAKE_THREAD_LIBS_INIT}
   ${_GRPC_GRPCPP_UNSECURE}
   ${_PROTOBUF_LIBPROTOBUF})
 
