@@ -60,8 +60,8 @@ $ make
 $ sudo make install
 ```
 ### 6. glog
+Change to a new directory.
 ```console
-# Change to a new directory
 $ git clone https://github.com/google/glog.git
 $ cd glog
 $ cmake -H. -Bbuild -G "Unix Makefiles"
