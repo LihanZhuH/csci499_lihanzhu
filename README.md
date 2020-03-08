@@ -17,7 +17,7 @@ For installation, please follow [this guide](SETUP.md).
 ## Build Instruction
 
 1. In root directory of `csci499_lihanzhu`, run:
-```
+```console
 $ cmake .
 $ cmake --build .
 ```
@@ -25,21 +25,21 @@ $ cmake --build .
 
 ## Steps to Run
 1. Go to `bin` folder where all executables are generated.
-```
+```console
 $ cd bin
 ```
 
 2. Always start `func_server` and `kvstore_server` first. In two different terminals, run the servers.
-```
+```console
 $ ./func_server
 ```
-```
+```console
 $ ./kvstore_server
 ```
 The servers should start listening to requests.
 
 3. In another terminal, run command line user interface `user_interface` (See help with `user_interface --help`).
-```
+```console
 $ ./user_interface <flag> <argument> ... 
 ```
 
