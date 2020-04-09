@@ -52,9 +52,8 @@ TEST_F(EventHandlerBasicTest, EventCallOnInvalidFunctionShouldFail) {
 class EventHandlerComplexTest : public ::testing::Test {
  protected:
   void SetUp() override {
-    std::unordered_map<std::string, std::vector<std::string>> storage =
-        {{"U:TEST_0", {""}},
-         {"U:TEST_00", {""}}};
+    std::unordered_map<std::string, std::vector<std::string>> storage = {
+        {"U:TEST_0", {""}}, {"U:TEST_00", {""}}};
     client_ = std::make_shared<kvstore::KVStoreTestClient>(storage);
     event_handler_ = std::make_shared<func::EventHandler>(client_);
     event_handler_->Hook(1, "registeruser");
@@ -112,6 +111,7 @@ TEST_F(EventHandlerComplexTest, EventHookAndWarbleShouldSucceed) {
   warble_request.set_username("TEST_0");
   warble_request.set_text("Text");
   payload.PackFrom(warble_request);
+  std::string parent_id;
 
   if (auto reply_payload = event_handler_->Event(2, payload)) {
     warble::WarbleReply reply;
@@ -120,8 +120,8 @@ TEST_F(EventHandlerComplexTest, EventHookAndWarbleShouldSucceed) {
     warble::Warble reply_warble = reply.warble();
     // Compare content
     EXPECT_EQ(reply_warble.username(), "TEST_0");
-    EXPECT_EQ(reply_warble.id(), "1");
     EXPECT_EQ(reply_warble.text(), "Text");
+    parent_id = reply_warble.id();
   } else {
     FAIL();
   }
@@ -131,7 +131,7 @@ TEST_F(EventHandlerComplexTest, EventHookAndWarbleShouldSucceed) {
 
   // Read warble
   warble::ReadRequest read_request;
-  read_request.set_warble_id("1");
+  read_request.set_warble_id(parent_id);
   payload.PackFrom(read_request);
 
   if (auto reply_payload = event_handler_->Event(4, payload)) {
@@ -142,7 +142,7 @@ TEST_F(EventHandlerComplexTest, EventHookAndWarbleShouldSucceed) {
     warble::Warble reply_warble = reply.warbles().at(0);
     // Compare content
     EXPECT_EQ(reply_warble.username(), "TEST_0");
-    EXPECT_EQ(reply_warble.id(), "1");
+    EXPECT_EQ(reply_warble.id(), parent_id);
     EXPECT_EQ(reply_warble.text(), "Text");
   } else {
     FAIL();

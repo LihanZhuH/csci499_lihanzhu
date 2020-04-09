@@ -2,7 +2,7 @@
 
 namespace func {
 
-bool EventHandler::Hook(int event_type, const std::string &event_function) {
+bool EventHandler::Hook(int event_type, const std::string& event_function) {
   // Not a valid event function
   if (event_function_set_.find(event_function) == event_function_set_.end()) {
     LOG(WARNING) << "Event Handler - Hook: Invalid event function";
@@ -15,8 +15,8 @@ bool EventHandler::Hook(int event_type, const std::string &event_function) {
     return false;
   }
   event_map_.insert(std::pair<int, std::string>(event_type, event_function));
-  LOG(INFO) << "Event Handler - Hook: Event " << event_function
-            << " hooked to " << event_type;
+  LOG(INFO) << "Event Handler - Hook: Event " << event_function << " hooked to "
+            << event_type;
   return true;
 }
 
@@ -32,8 +32,8 @@ bool EventHandler::Unhook(int event_type) {
   return true;
 }
 
-std::optional<google::protobuf::Any> EventHandler::Event(int event_type,
-    const google::protobuf::Any& payload) {
+std::optional<google::protobuf::Any> EventHandler::Event(
+    int event_type, const google::protobuf::Any& payload) {
   std::string event_function;
   {
     std::scoped_lock(map_mutex_);
@@ -52,7 +52,7 @@ std::optional<google::protobuf::Any> EventHandler::Event(int event_type,
     warble::RegisteruserReply reply;
     payload.UnpackTo(&request);  // Unpack Any
 
-    if (warble_func_.Registeruser(request, &reply)) {
+    if (Registeruser(kvstore_client_, request, &reply)) {
       reply_payload.PackFrom(reply);
       LOG(INFO) << "Event Handler - Event: Successful registeruser call";
       return reply_payload;
@@ -63,7 +63,7 @@ std::optional<google::protobuf::Any> EventHandler::Event(int event_type,
     warble::WarbleReply reply;
     payload.UnpackTo(&request);  // Unpack Any
 
-    if (warble_func_.NewWarble(request, &reply)) {
+    if (NewWarble(kvstore_client_, request, &reply)) {
       reply_payload.PackFrom(reply);
       LOG(INFO) << "Event Handler - Event: Successful warble call";
       return reply_payload;
@@ -74,7 +74,7 @@ std::optional<google::protobuf::Any> EventHandler::Event(int event_type,
     warble::FollowReply reply;
     payload.UnpackTo(&request);  // Unpack Any
 
-    if (warble_func_.Follow(request, &reply)) {
+    if (Follow(kvstore_client_, request, &reply)) {
       reply_payload.PackFrom(reply);
       LOG(INFO) << "Event Handler - Event: Successful follow call";
       return reply_payload;
@@ -85,7 +85,7 @@ std::optional<google::protobuf::Any> EventHandler::Event(int event_type,
     warble::ReadReply reply;
     payload.UnpackTo(&request);  // Unpack Any
 
-    if (warble_func_.Read(request, &reply)) {
+    if (Read(kvstore_client_, request, &reply)) {
       reply_payload.PackFrom(reply);
       LOG(INFO) << "Event Handler - Event: Successful read call";
       return reply_payload;
@@ -96,7 +96,7 @@ std::optional<google::protobuf::Any> EventHandler::Event(int event_type,
     warble::ProfileReply reply;
     payload.UnpackTo(&request);  // Unpack Any
 
-    if (warble_func_.Profile(request, &reply)) {
+    if (Profile(kvstore_client_, request, &reply)) {
       reply_payload.PackFrom(reply);
       LOG(INFO) << "Event Handler - Event: Successful profile call";
       return reply_payload;

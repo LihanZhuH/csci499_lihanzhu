@@ -1,17 +1,17 @@
 #ifndef FUNC_FUNC_SERVER_H_
 #define FUNC_FUNC_SERVER_H_
 
-#include <grpcpp/grpcpp.h>
 #include <google/protobuf/any.pb.h>
+#include <grpcpp/grpcpp.h>
 
-#include <unordered_map>
-#include <string>
-#include <set>
 #include <memory>
+#include <set>
+#include <string>
+#include <unordered_map>
 
 #include "func/event_handler.h"
-#include "kvstore/kvstore_client.h"
 #include "func/func.grpc.pb.h"
+#include "kvstore/kvstore_client.h"
 
 namespace func {
 
@@ -20,8 +20,8 @@ class FuncServiceImpl final : public func::FuncService::Service {
  public:
   // Constructor
   explicit FuncServiceImpl(std::shared_ptr<grpc::Channel> channel)
-       : event_handler_(std::make_shared<kvstore::KVStoreWarbleClient>
-                        (channel)) {}
+      : event_handler_(
+            std::make_shared<kvstore::KVStoreWarbleClient>(channel)) {}
 
   // Hook an event type with an event function
   grpc::Status Hook(grpc::ServerContext* context,

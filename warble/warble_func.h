@@ -3,63 +3,57 @@
 
 #include <sys/time.h>
 
-#include <string>
 #include <memory>
-#include <vector>
 #include <queue>
+#include <random>
+#include <string>
+#include <vector>
 
-#include "warble/warble.pb.h"
 #include "kvstore/kvstore_client.h"
+#include "warble/warble.pb.h"
 
 namespace warble {
 
-// Warble function calls on Func platform
-// Use Protobuf for all requests and responses
-// Success/failure is signaled via returned boolean
-class WarbleFunc {
- public:
-  // Constructor that requires a pointer to KVStore client
-  explicit WarbleFunc(std::shared_ptr<kvstore::KVStoreClientAbstract> client)
-      : kvstore_client_(client), warble_cnt_(0) {}
+typedef std::shared_ptr<kvstore::KVStoreClientAbstract> KVStoreClientPtr;
 
-  // Disable move and copy
-  WarbleFunc(const WarbleFunc&) = delete;
-  WarbleFunc& operator=(const WarbleFunc&) = delete;
+// All warble functions take in a pointer to KVStoreClientAbstract,
+// and use Protobuf for all requests and responses.
+// Success/failure is signaled via returned boolean.
 
-  // Register the given non-blank username
-  bool Registeruser(const RegisteruserRequest& request,
-                    RegisteruserReply* response);
+// Register the given non-blank username
+bool Registeruser(KVStoreClientPtr kvstore_client,
+                  const RegisteruserRequest& request,
+                  RegisteruserReply* response);
 
-  // Post a new warble (optionally as a reply), return the id of the new warble
-  bool NewWarble(const WarbleRequest& request, WarbleReply* response);
+// Post a new warble (optionally as a reply), return the id of the new warble
+bool NewWarble(KVStoreClientPtr kvstore_client, const WarbleRequest& request,
+               WarbleReply* response);
 
-  // Start following a given user
-  bool Follow(const FollowRequest& request, FollowReply* response);
+// Start following a given user
+bool Follow(KVStoreClientPtr kvstore_client, const FollowRequest& request,
+            FollowReply* response);
 
-  // Read a warble thread from the given id
-  bool Read(const ReadRequest& request, ReadReply* response);
+// Read a warble thread from the given id
+bool Read(KVStoreClientPtr kvstore_client, const ReadRequest& request,
+          ReadReply* response);
 
-  // Return this user’s following and followers
-  bool Profile(const ProfileRequest& request, ProfileReply* response);
+// Return this user’s following and followers
+bool Profile(KVStoreClientPtr kvstore_client, const ProfileRequest& request,
+             ProfileReply* response);
 
- private:
-  // Pointer to KVStore client that communicates to database
-  std::shared_ptr<kvstore::KVStoreClientAbstract> kvstore_client_;
+// Random generator for warble id
+static std::mt19937 rand(std::random_device{}());
 
-  // Count total warbles and generate new warble id
-  unsigned int warble_cnt_;
-
-  // Prefix for database strings
-  const std::string kUsername = "U:";
-  const std::string kFollowing = "FI:";
-  const std::string kFollower = "FE:";
-  const std::string kWarbleID = "W:";
-  const std::string kText = "T:";
-  const std::string kReplyTo = "RT:";
-  const std::string kReplies = "RS:";
-  const std::string kTimestampSec = "TS:";
-  const std::string kTimestampUsec = "TU:";
-};
+// Prefix for database strings
+static std::string kUsername = "U:";
+static std::string kFollowing = "FI:";
+static std::string kFollower = "FE:";
+static std::string kWarbleID = "W:";
+static std::string kText = "T:";
+static std::string kReplyTo = "RT:";
+static std::string kReplies = "RS:";
+static std::string kTimestampSec = "TS:";
+static std::string kTimestampUsec = "TU:";
 
 }  // namespace warble
 

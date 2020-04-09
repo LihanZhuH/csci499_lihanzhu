@@ -1,13 +1,13 @@
 #ifndef FUNC_FUNC_CLIENT_H_
 #define FUNC_FUNC_CLIENT_H_
 
-#include <grpcpp/grpcpp.h>
 #include <glog/logging.h>
 #include <google/protobuf/any.pb.h>
+#include <grpcpp/grpcpp.h>
 
-#include <string>
-#include <optional>
 #include <memory>
+#include <optional>
+#include <string>
 
 #include "func/func.grpc.pb.h"
 #include "func/func.pb.h"
@@ -32,8 +32,8 @@ class FuncClientAbstract {
 
   // Execute the function with the event type and payload
   // Return the reply payload
-  virtual std::optional<google::protobuf::Any> Event(int event_type,
-      const google::protobuf::Any& payload) = 0;
+  virtual std::optional<google::protobuf::Any> Event(
+      int event_type, const google::protobuf::Any& payload) = 0;
 };
 
 // Func client that communicates with gRPC server
@@ -58,8 +58,8 @@ class FuncClientImpl : public FuncClientAbstract {
 
   // Execute the function with the event type and payload
   // Return the reply payload
-  std::optional<google::protobuf::Any> Event(int event_type,
-      const google::protobuf::Any& payload) override;
+  std::optional<google::protobuf::Any> Event(
+      int event_type, const google::protobuf::Any& payload) override;
 
  private:
   // Pointer of stub for connection to func server

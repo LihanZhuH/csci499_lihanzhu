@@ -2,29 +2,25 @@
 
 #include <gtest/gtest.h>
 
-#include <unordered_map>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
-#include "warble/warble.pb.h"
 #include "kvstore/kvstore_client.h"
+#include "warble/warble.pb.h"
 
 // Test fixture with basic populated KVStore
 // KVStore contains two users "TEST_0" and "TEST_00"
 class WarbleFuncBasicTest : public ::testing::Test {
  protected:
   void SetUp() override {
-    std::unordered_map<std::string, std::vector<std::string>> storage =
-        {{"U:TEST_0", {""}},
-         {"U:TEST_00", {""}}};
-    client_ = std::shared_ptr<kvstore::KVStoreClientAbstract>
-                (new kvstore::KVStoreTestClient(storage));
-    warble_func_ = std::shared_ptr<warble::WarbleFunc>
-                     (new warble::WarbleFunc(client_));
+    std::unordered_map<std::string, std::vector<std::string>> storage = {
+        {"U:TEST_0", {""}}, {"U:TEST_00", {""}}};
+    client_ = std::shared_ptr<kvstore::KVStoreClientAbstract>(
+        new kvstore::KVStoreTestClient(storage));
   }
 
   std::shared_ptr<kvstore::KVStoreClientAbstract> client_;
-  std::shared_ptr<warble::WarbleFunc> warble_func_;
 };
 
 // Registering a new user
@@ -33,7 +29,7 @@ TEST_F(WarbleFuncBasicTest, SimpleRegisterShouldSucceed) {
   warble::RegisteruserRequest request;
   warble::RegisteruserReply reply;
   request.set_username("TEST_1");
-  ASSERT_TRUE(warble_func_->Registeruser(request, &reply));
+  ASSERT_TRUE(Registeruser(client_, request, &reply));
 }
 
 // Registering an existing user
@@ -42,7 +38,7 @@ TEST_F(WarbleFuncBasicTest, RegisterExistingUsernameShouldFail) {
   warble::RegisteruserRequest request;
   warble::RegisteruserReply reply;
   request.set_username("TEST_0");
-  ASSERT_FALSE(warble_func_->Registeruser(request, &reply));
+  ASSERT_FALSE(Registeruser(client_, request, &reply));
 }
 
 // Registering a user twice
@@ -51,8 +47,8 @@ TEST_F(WarbleFuncBasicTest, RegisterAUserTwiceShouldFail) {
   warble::RegisteruserRequest request;
   warble::RegisteruserReply reply;
   request.set_username("TEST_1");
-  ASSERT_TRUE(warble_func_->Registeruser(request, &reply));
-  ASSERT_FALSE(warble_func_->Registeruser(request, &reply));
+  ASSERT_TRUE(Registeruser(client_, request, &reply));
+  ASSERT_FALSE(Registeruser(client_, request, &reply));
 }
 
 // Creating a new warble from existing user
@@ -62,9 +58,8 @@ TEST_F(WarbleFuncBasicTest, SimpleNewWarbleShouldSucceed) {
   warble::WarbleReply reply;
   request.set_username("TEST_0");
   request.set_text("text");
-  ASSERT_TRUE(warble_func_->NewWarble(request, &reply));
+  ASSERT_TRUE(NewWarble(client_, request, &reply));
   // Compare warble content
-  EXPECT_EQ(reply.warble().id(), "1");
   EXPECT_EQ(reply.warble().username(), "TEST_0");
   EXPECT_EQ(reply.warble().text(), "text");
 }
@@ -76,7 +71,7 @@ TEST_F(WarbleFuncBasicTest, NewWarbleFromUnknownUserShouldFail) {
   warble::WarbleReply reply;
   request.set_username("TEST_1");
   request.set_text("text");
-  ASSERT_FALSE(warble_func_->NewWarble(request, &reply));
+  ASSERT_FALSE(NewWarble(client_, request, &reply));
 }
 
 // Creating two new warbles from existing user
@@ -88,18 +83,16 @@ TEST_F(WarbleFuncBasicTest, DoubleNewWarbleShouldSucceed) {
   // First warble
   request.set_username("TEST_0");
   request.set_text("text");
-  ASSERT_TRUE(warble_func_->NewWarble(request, &reply));
+  ASSERT_TRUE(NewWarble(client_, request, &reply));
   // Compare warble content
-  EXPECT_EQ(reply.warble().id(), "1");
   EXPECT_EQ(reply.warble().username(), "TEST_0");
   EXPECT_EQ(reply.warble().text(), "text");
 
   // Second warble
   request.set_username("TEST_0");
   request.set_text("text_1");
-  ASSERT_TRUE(warble_func_->NewWarble(request, &reply));
+  ASSERT_TRUE(NewWarble(client_, request, &reply));
   // Compare warble content
-  EXPECT_EQ(reply.warble().id(), "2");
   EXPECT_EQ(reply.warble().username(), "TEST_0");
   EXPECT_EQ(reply.warble().text(), "text_1");
 }
@@ -111,7 +104,7 @@ TEST_F(WarbleFuncBasicTest, FollowExistingUserShouldSucceed) {
   warble::FollowReply reply;
   request.set_username("TEST_0");
   request.set_to_follow("TEST_00");
-  ASSERT_TRUE(warble_func_->Follow(request, &reply));
+  ASSERT_TRUE(Follow(client_, request, &reply));
 }
 
 // Following an unknown user
@@ -121,7 +114,7 @@ TEST_F(WarbleFuncBasicTest, FollowUnknownUserShouldFail) {
   warble::FollowReply reply;
   request.set_username("TEST_0");
   request.set_to_follow("TEST_1");
-  ASSERT_FALSE(warble_func_->Follow(request, &reply));
+  ASSERT_FALSE(Follow(client_, request, &reply));
 }
 
 // Following from an unknown user
@@ -131,7 +124,7 @@ TEST_F(WarbleFuncBasicTest, UnknownFollowUserShouldFail) {
   warble::FollowReply reply;
   request.set_username("TEST_1");
   request.set_to_follow("TEST_0");
-  ASSERT_FALSE(warble_func_->Follow(request, &reply));
+  ASSERT_FALSE(Follow(client_, request, &reply));
 }
 
 // Reading after posting a new warble
@@ -141,17 +134,16 @@ TEST_F(WarbleFuncBasicTest, BasicReadShouldSucceed) {
   warble::WarbleReply reply;
   request.set_username("TEST_0");
   request.set_text("text");
-  ASSERT_TRUE(warble_func_->NewWarble(request, &reply));
+  ASSERT_TRUE(NewWarble(client_, request, &reply));
 
   warble::ReadRequest read_request;
   warble::ReadReply read_reply;
-  read_request.set_warble_id("1");
-  ASSERT_TRUE(warble_func_->Read(read_request, &read_reply));
+  read_request.set_warble_id(reply.warble().id());
+  ASSERT_TRUE(Read(client_, read_request, &read_reply));
   ASSERT_EQ(read_reply.warbles().size(), 1);
   warble::Warble warble_obj = read_reply.warbles().at(0);
   ASSERT_EQ(warble_obj.username(), "TEST_0");
   ASSERT_EQ(warble_obj.text(), "text");
-  ASSERT_EQ(warble_obj.id(), "1");
 }
 
 // Reading unknown warble
@@ -160,7 +152,7 @@ TEST_F(WarbleFuncBasicTest, ReadUnknownShouldFail) {
   warble::ReadRequest read_request;
   warble::ReadReply read_reply;
   read_request.set_warble_id("1");
-  ASSERT_FALSE(warble_func_->Read(read_request, &read_reply));
+  ASSERT_FALSE(Read(client_, read_request, &read_reply));
 }
 
 // Getting the profile of an existing user
@@ -169,7 +161,7 @@ TEST_F(WarbleFuncBasicTest, BasicProfileShouldSucceed) {
   warble::ProfileRequest request;
   warble::ProfileReply reply;
   request.set_username("TEST_0");
-  ASSERT_TRUE(warble_func_->Profile(request, &reply));
+  ASSERT_TRUE(Profile(client_, request, &reply));
   ASSERT_EQ(reply.followers().size(), 0);
   ASSERT_EQ(reply.following().size(), 0);
 }
@@ -180,7 +172,7 @@ TEST_F(WarbleFuncBasicTest, UnknownProfileShouldFail) {
   warble::ProfileRequest request;
   warble::ProfileReply reply;
   request.set_username("TEST_1");
-  ASSERT_FALSE(warble_func_->Profile(request, &reply));
+  ASSERT_FALSE(Profile(client_, request, &reply));
 }
 
 // Test fixture with complex populated KVStore
@@ -190,24 +182,22 @@ TEST_F(WarbleFuncBasicTest, UnknownProfileShouldFail) {
 class WarbleFuncComplexTest : public ::testing::Test {
  protected:
   void SetUp() override {
-    std::unordered_map<std::string, std::vector<std::string>> storage =
-        {{"U:TEST_0", {"FI:TEST_00"}},
-         {"U:TEST_00", {"FE:TEST_0"}}};
-    client_ = std::shared_ptr<kvstore::KVStoreClientAbstract>
-                (new kvstore::KVStoreTestClient(storage));
-    warble_func_ = std::shared_ptr<warble::WarbleFunc>
-                     (new warble::WarbleFunc(client_));
+    std::unordered_map<std::string, std::vector<std::string>> storage = {
+        {"U:TEST_0", {"FI:TEST_00"}}, {"U:TEST_00", {"FE:TEST_0"}}};
+    client_ = std::shared_ptr<kvstore::KVStoreClientAbstract>(
+        new kvstore::KVStoreTestClient(storage));
 
     // Create some warbles
     warble::WarbleRequest request;
     warble::WarbleReply reply;
     request.set_username("TEST_0");
     request.set_text("text_0");
-    warble_func_->NewWarble(request, &reply);
+    NewWarble(client_, request, &reply);
+    parent_id_ = reply.warble().id();
   }
 
   std::shared_ptr<kvstore::KVStoreClientAbstract> client_;
-  std::shared_ptr<warble::WarbleFunc> warble_func_;
+  std::string parent_id_;
 };
 
 // Replying to existing warble
@@ -217,10 +207,8 @@ TEST_F(WarbleFuncComplexTest, NewWarbleReplyShouldSucceed) {
   warble::WarbleReply reply;
   request.set_username("TEST_0");
   request.set_text("text_1");
-  request.set_parent_id("1");
-  ASSERT_TRUE(warble_func_->NewWarble(request, &reply));
-  // Compare warble content
-  EXPECT_EQ(reply.warble().id(), "2");
+  request.set_parent_id(parent_id_);
+  ASSERT_TRUE(NewWarble(client_, request, &reply));
 }
 
 // Replying to existing warble, and read the thread from parent
@@ -230,22 +218,18 @@ TEST_F(WarbleFuncComplexTest, ReadThreadShouldSucceed) {
   warble::WarbleReply reply;
   request.set_username("TEST_00");
   request.set_text("text_1");
-  request.set_parent_id("1");
-  ASSERT_TRUE(warble_func_->NewWarble(request, &reply));
-  // Compare warble content
-  EXPECT_EQ(reply.warble().id(), "2");
+  request.set_parent_id(parent_id_);
+  ASSERT_TRUE(NewWarble(client_, request, &reply));
 
   warble::ReadRequest read_request;
   warble::ReadReply read_reply;
-  read_request.set_warble_id("1");
-  ASSERT_TRUE(warble_func_->Read(read_request, &read_reply));
+  read_request.set_warble_id(parent_id_);
+  ASSERT_TRUE(Read(client_, read_request, &read_reply));
   ASSERT_EQ(read_reply.warbles().size(), 2);  // Should contain two warbles
   // Compare content
-  EXPECT_EQ(read_reply.warbles().at(0).id(), "1");
   EXPECT_EQ(read_reply.warbles().at(0).username(), "TEST_0");
   EXPECT_EQ(read_reply.warbles().at(0).text(), "text_0");
-  EXPECT_EQ(read_reply.warbles().at(1).id(), "2");
   EXPECT_EQ(read_reply.warbles().at(1).username(), "TEST_00");
   EXPECT_EQ(read_reply.warbles().at(1).text(), "text_1");
-  EXPECT_EQ(read_reply.warbles().at(1).parent_id(), "1");
+  EXPECT_EQ(read_reply.warbles().at(1).parent_id(), parent_id_);
 }

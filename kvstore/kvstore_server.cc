@@ -8,7 +8,8 @@
 namespace kvstore {
 
 grpc::Status KeyValueStoreImpl::Put(grpc::ServerContext* context,
-    const PutRequest* request, PutReply* response) {
+                                    const PutRequest* request,
+                                    PutReply* response) {
   LOG(INFO) << "kvstore_server - Put: " << request->key() << ", "
             << request->value();
   if (db_.PutIntoStorage(request->key(), request->value())) {
@@ -17,7 +18,8 @@ grpc::Status KeyValueStoreImpl::Put(grpc::ServerContext* context,
   return grpc::Status::CANCELLED;
 }
 
-grpc::Status KeyValueStoreImpl::Get(grpc::ServerContext* context,
+grpc::Status KeyValueStoreImpl::Get(
+    grpc::ServerContext* context,
     grpc::ServerReaderWriter<GetReply, GetRequest>* stream) {
   GetRequest request;
   stream->Read(&request);
@@ -36,7 +38,8 @@ grpc::Status KeyValueStoreImpl::Get(grpc::ServerContext* context,
 }
 
 grpc::Status KeyValueStoreImpl::Remove(grpc::ServerContext* context,
-    const RemoveRequest* request, RemoveReply* response) {
+                                       const RemoveRequest* request,
+                                       RemoveReply* response) {
   if (db_.RemoveFromStorage(request->key())) {
     return grpc::Status::OK;
   }
@@ -60,7 +63,7 @@ void RunServer() {
 
 }  // namespace kvstore
 
-int main(int argc, char const *argv[]) {
+int main(int argc, char const* argv[]) {
   kvstore::RunServer();
 
   return 0;

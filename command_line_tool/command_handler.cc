@@ -7,11 +7,11 @@ DEFINE_string(registeruser, "", "Registers the given username.");
 DEFINE_string(user, "", "Logs in as the given username.");
 DEFINE_string(warble, "", "Creates a new warble with the given text.");
 DEFINE_string(reply, "",
-    "Indicates that the new warble is a reply to the given id.");
+              "Indicates that the new warble is a reply to the given id.");
 DEFINE_string(follow, "", "Starts following the given username.");
 DEFINE_string(read, "", "Reads the warble thread starting at the given id.");
 DEFINE_bool(profile, false,
-    "Gets the user’s profile of following and followers.");
+            "Gets the user’s profile of following and followers.");
 
 // -- Implementation of Handler --
 
@@ -25,9 +25,8 @@ bool RegisterHandler::IsValidCommand() {
   if (FLAGS_registeruser.empty()) {
     return false;
   }
-  if (!FLAGS_user.empty() || !FLAGS_warble.empty() ||
-      !FLAGS_reply.empty() || !FLAGS_follow.empty() ||
-      !FLAGS_read.empty() || FLAGS_profile) {
+  if (!FLAGS_user.empty() || !FLAGS_warble.empty() || !FLAGS_reply.empty() ||
+      !FLAGS_follow.empty() || !FLAGS_read.empty() || FLAGS_profile) {
     return false;
   }
   return true;
@@ -45,7 +44,7 @@ bool RegisterHandler::ProcessCommand() {
   request_payload.PackFrom(request);
   // Check reply
   if (auto optional_payload =
-      func_client_->Event(kRegisterEventType, request_payload)) {
+          func_client_->Event(kRegisterEventType, request_payload)) {
     optional_payload->UnpackTo(&reply);
     std::cout << "Successfully registered!" << std::endl;
     return true;
@@ -84,7 +83,7 @@ bool WarbleHandler::ProcessCommand() {
   request_payload.PackFrom(request);
   // Check reply
   if (auto optional_payload =
-      func_client_->Event(kWarbleEventType, request_payload)) {
+          func_client_->Event(kWarbleEventType, request_payload)) {
     optional_payload->UnpackTo(&reply);
     std::cout << "Warble ID: " << reply.warble().id() << std::endl;
     std::cout << "Successfully posted warble!" << std::endl;
@@ -122,7 +121,7 @@ bool FollowHandler::ProcessCommand() {
   request_payload.PackFrom(request);
   // Check reply
   if (auto optional_payload =
-      func_client_->Event(kFollowEventType, request_payload)) {
+          func_client_->Event(kFollowEventType, request_payload)) {
     optional_payload->UnpackTo(&reply);
     std::cout << "Successfully followed!" << std::endl;
     return true;
@@ -157,7 +156,7 @@ bool ReadHandler::ProcessCommand() {
   request_payload.PackFrom(request);
   // Check reply
   if (auto optional_payload =
-      func_client_->Event(kReadEventType, request_payload)) {
+          func_client_->Event(kReadEventType, request_payload)) {
     optional_payload->UnpackTo(&reply);
     // Display all warbles
     auto repeated_warbles = reply.warbles();
@@ -187,8 +186,7 @@ bool ProfileHandler::IsValidCommand() {
     return false;
   }
   if (!FLAGS_registeruser.empty() || !FLAGS_reply.empty() ||
-      !FLAGS_warble.empty() || !FLAGS_follow.empty() ||
-      !FLAGS_read.empty()) {
+      !FLAGS_warble.empty() || !FLAGS_follow.empty() || !FLAGS_read.empty()) {
     return false;
   }
   return true;
@@ -206,7 +204,7 @@ bool ProfileHandler::ProcessCommand() {
   request_payload.PackFrom(request);
   // Check reply
   if (auto optional_payload =
-      func_client_->Event(kProfileEventType, request_payload)) {
+          func_client_->Event(kProfileEventType, request_payload)) {
     optional_payload->UnpackTo(&reply);
     // Display followers
     if (reply.followers_size() == 0) {

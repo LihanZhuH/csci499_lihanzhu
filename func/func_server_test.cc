@@ -1,6 +1,6 @@
-#include <grpcpp/grpcpp.h>
 #include <glog/logging.h>
 #include <google/protobuf/any.pb.h>
+#include <grpcpp/grpcpp.h>
 
 #include <iostream>
 
@@ -18,8 +18,8 @@ class FuncServiceClient {
 
   // Test of hook
   bool TestHook(int event_type, const std::string& event_function) {
-    LOG(INFO) << "TestHook: event_type: " << event_type <<
-                 ", event_function: " << event_function;
+    LOG(INFO) << "TestHook: event_type: " << event_type
+              << ", event_function: " << event_function;
     grpc::ClientContext context;
     func::HookRequest request;
     func::HookReply reply;
@@ -98,9 +98,9 @@ class FuncServiceClient {
 
 }  // namespace func
 
-int main(int argc, char const *argv[]) {
-  auto channel = grpc::CreateChannel(
-      "localhost:50000", grpc::InsecureChannelCredentials());
+int main(int argc, char const* argv[]) {
+  auto channel = grpc::CreateChannel("localhost:50000",
+                                     grpc::InsecureChannelCredentials());
   func::FuncServiceClient client(channel);
 
   if (client.TestHook(1, "registeruser")) {

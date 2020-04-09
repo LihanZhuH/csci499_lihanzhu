@@ -1,11 +1,11 @@
 #ifndef KVSTORE_DATABASE_H_
 #define KVSTORE_DATABASE_H_
 
-#include <unordered_map>
-#include <string>
 #include <mutex>
-#include <vector>
 #include <optional>
+#include <string>
+#include <unordered_map>
+#include <vector>
 
 namespace kvstore {
 
@@ -18,8 +18,8 @@ class DataBase {
   ~DataBase() {}
 
   // Disable move and copy
-  DataBase(const DataBase&) = delete;
-  DataBase& operator=(const DataBase&) = delete;
+  DataBase(const DataBase &) = delete;
+  DataBase &operator=(const DataBase &) = delete;
 
   // Put 'key' and 'value' into storage
   // Return true if correctly stored, false otherwise
@@ -27,8 +27,8 @@ class DataBase {
 
   // Return an optional with all values corresponding to 'key'
   // Optional is null if no key found
-  std::optional<std::vector<std::string>> GetFromStorage
-      (const std::string &key);
+  std::optional<std::vector<std::string>> GetFromStorage(
+      const std::string &key);
 
   // Remove key in storage
   // Return true if key exists, false otherwise
