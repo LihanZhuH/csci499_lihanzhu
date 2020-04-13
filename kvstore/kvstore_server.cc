@@ -60,14 +60,14 @@ grpc::Status KeyValueStoreImpl::Remove(grpc::ServerContext* context,
   return grpc::Status::CANCELLED;
 }
 
-bool KeyValueStoreImpl::EnableDiskPersistence(const std::string &filename) {
+bool KeyValueStoreImpl::EnableDiskPersistence(const std::string& filename) {
   filename_ = filename;
 
   // Error while reading from file
   if (!Load()) {
     return false;
   }
-  // Adds handlers for SIGINT and SIGTERM 
+  // Adds handlers for SIGINT and SIGTERM
   struct sigaction sig_handler;
   sig_handler.sa_flags = 0;
   sig_handler.sa_handler = SigHandler;
@@ -77,7 +77,7 @@ bool KeyValueStoreImpl::EnableDiskPersistence(const std::string &filename) {
 }
 
 void KeyValueStoreImpl::SigHandler(int s) {
-  LOG(INFO) << "kvstore server: Storing to file";
+  LOG(INFO) << "kvstore_server - SigHandler: Storing to file";
   if (!getInstance().HandlerHelper()) {
     std::cout << "Failed to store to file \"" << getInstance().filename_
               << "\"." << std::endl;
@@ -111,7 +111,7 @@ bool KeyValueStoreImpl::HandlerHelper() {
 
   // Fails to open file
   if (out_file.fail()) {
-    LOG(WARNING) << "kvstore server - HandlerHelper: Failed to open file.";
+    LOG(WARNING) << "kvstore_server - HandlerHelper: Failed to open file.";
     return false;
   }
   out_file.close();
@@ -126,7 +126,7 @@ void KeyValueStoreImpl::Save() {
   std::ofstream out_file;
   out_file.open(filename_);
   if (!out_file.is_open()) {
-    LOG(WARNING) << "kvstore server - Save: Failed to open file.";
+    LOG(WARNING) << "kvstore_server - Save: Failed to open file.";
     return;
   }
   db_.Serialize(out_file);
@@ -136,13 +136,14 @@ void KeyValueStoreImpl::Save() {
 // Run the server listening on port 50001
 int RunServer() {
   std::string server_address("0.0.0.0:50001");
-  KeyValueStoreImpl &service = KeyValueStoreImpl::getInstance();
+  KeyValueStoreImpl& service = KeyValueStoreImpl::getInstance();
 
   // Checks if user wants persist storage
   if (!FLAGS_store.empty() && !service.EnableDiskPersistence(FLAGS_store)) {
     std::cout << "Failed to load from file \"" << FLAGS_store << "\"."
-              << std::endl << "Terminating..." << std::endl;
-    LOG(WARNING) << "kvstore server - RunServer: Failed to restore from file.";
+              << std::endl
+              << "Terminating..." << std::endl;
+    LOG(WARNING) << "kvstore_server - RunServer: Failed to restore from file.";
     return -1;
   }
 
@@ -159,7 +160,7 @@ int RunServer() {
 
 }  // namespace kvstore
 
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[]) {
   google::ParseCommandLineFlags(&argc, &argv, true);
   return kvstore::RunServer();
 }

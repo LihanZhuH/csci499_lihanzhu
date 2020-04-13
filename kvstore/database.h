@@ -1,12 +1,12 @@
 #ifndef KVSTORE_DATABASE_H_
 #define KVSTORE_DATABASE_H_
 
+#include <iostream>
 #include <mutex>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#include <iostream>
 
 namespace kvstore {
 

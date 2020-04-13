@@ -3,8 +3,8 @@
 #include <glog/logging.h>
 
 #include <algorithm>
-#include <stdexcept>
 #include <exception>
+#include <stdexcept>
 
 namespace kvstore {
 
@@ -57,10 +57,10 @@ void DataBase::Serialize(std::ostream &os) const {
 
 bool DataBase::Deserialize(std::istream &is) {
   std::string line, key;  // Line to be read and current key.
-  int values_left = 0;  // Number of values left to be read.
-  int state = 0;  // state == 0 means reading the key.
-                  // state == 1 means reading the values size.
-                  // state == 2 means reading the values.
+  int values_left = 0;    // Number of values left to be read.
+  int state = 0;          // state == 0 means reading the key.
+                          // state == 1 means reading the values size.
+                          // state == 2 means reading the values.
   while (getline(is, line)) {
     // Uses a state machine to read different components.
     if (state == 0) {

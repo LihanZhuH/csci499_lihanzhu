@@ -1,11 +1,11 @@
 #ifndef KVSTORE_KVSTORE_SERVER_H_
 #define KVSTORE_KVSTORE_SERVER_H_
 
-#include <grpcpp/grpcpp.h>
 #include <gflags/gflags.h>
+#include <grpcpp/grpcpp.h>
 
-#include <string>
 #include <fstream>
+#include <string>
 
 #include "kvstore/database.h"
 #include "kvstore/kvstore.grpc.pb.h"
@@ -26,7 +26,7 @@ class KeyValueStoreImpl final : public kvstore::KeyValueStore::Service {
 
   // Disable move and copy
   KeyValueStoreImpl(const KeyValueStoreImpl&) = delete;
-  KeyValueStoreImpl &operator=(const KeyValueStoreImpl&) = delete;
+  KeyValueStoreImpl& operator=(const KeyValueStoreImpl&) = delete;
 
   // Put service
   grpc::Status Put(grpc::ServerContext* context,
@@ -43,13 +43,13 @@ class KeyValueStoreImpl final : public kvstore::KeyValueStore::Service {
   grpc::Status Remove(grpc::ServerContext* context,
                       const kvstore::RemoveRequest* request,
                       kvstore::RemoveReply* response) override;
-  
+
   // Restores data from file and stores data to file upon termination
-  bool EnableDiskPersistence(const std::string &filename);
+  bool EnableDiskPersistence(const std::string& filename);
 
   // The only instance of KeyValueStoreImpl
   static KeyValueStoreImpl& getInstance() {
-    static KeyValueStoreImpl instance; 
+    static KeyValueStoreImpl instance;
     return instance;
   }
 
