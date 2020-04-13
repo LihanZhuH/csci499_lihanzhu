@@ -4,18 +4,18 @@
 #include <glog/logging.h>
 #include <google/protobuf/any.pb.h>
 
-#include <string>
 #include <any>
-#include <unordered_map>
-#include <set>
-#include <mutex>
 #include <memory>
+#include <mutex>
 #include <optional>
+#include <set>
+#include <string>
+#include <unordered_map>
 #include <utility>
 
-#include "warble/warble_func.h"
-#include "warble/warble.pb.h"
 #include "kvstore/kvstore_client.h"
+#include "warble/warble.pb.h"
+#include "warble/warble_func.h"
 
 namespace func {
 
@@ -25,10 +25,10 @@ class EventHandler {
  public:
   // Default constructor
   explicit EventHandler(std::shared_ptr<kvstore::KVStoreClientAbstract> client)
-     : event_map_(),
-       event_function_set_({kRegisteruser, kWarble, kFollow, kRead, kProfile}),
-       map_mutex_(),
-       warble_func_(client) {}
+      : event_map_(),
+        event_function_set_({kRegisteruser, kWarble, kFollow, kRead, kProfile}),
+        map_mutex_(),
+        kvstore_client_(client) {}
   ~EventHandler() {}
 
   // Disable move and copy
@@ -37,7 +37,7 @@ class EventHandler {
 
   // Hook an event type with event function.
   // Return true if success, false otherwise
-  bool Hook(int event_type, const std::string &event_function);
+  bool Hook(int event_type, const std::string& event_function);
 
   // Unhook and event type
   // Return true if success, false otherwise
@@ -45,8 +45,8 @@ class EventHandler {
 
   // Call corresponding function to event type with payload
   // Return true if success, false otherwise
-  std::optional<google::protobuf::Any> Event(int event_type,
-      const google::protobuf::Any& payload);
+  std::optional<google::protobuf::Any> Event(
+      int event_type, const google::protobuf::Any& payload);
 
   // Function names
   const std::string kRegisteruser = "registeruser";
@@ -65,8 +65,8 @@ class EventHandler {
   // Mutex for thread-safe
   std::mutex map_mutex_;
 
-  // Warble functionalities
-  warble::WarbleFunc warble_func_;
+  // Pointer to KVStore client
+  std::shared_ptr<kvstore::KVStoreClientAbstract> kvstore_client_;
 };
 
 }  // namespace func

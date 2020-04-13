@@ -5,8 +5,8 @@
 
 #include <string>
 
-#include "kvstore/kvstore.grpc.pb.h"
 #include "kvstore/database.h"
+#include "kvstore/kvstore.grpc.pb.h"
 
 namespace kvstore {
 
@@ -21,7 +21,8 @@ class KeyValueStoreImpl final : public kvstore::KeyValueStore::Service {
                    kvstore::PutReply* response) override;
 
   // Get service
-  grpc::Status Get(grpc::ServerContext* context,
+  grpc::Status Get(
+      grpc::ServerContext* context,
       grpc::ServerReaderWriter<kvstore::GetReply, kvstore::GetRequest>* stream)
       override;
 

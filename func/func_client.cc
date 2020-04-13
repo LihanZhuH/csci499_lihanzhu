@@ -33,8 +33,8 @@ bool FuncClientImpl::Unhook(int event_type) {
   return true;
 }
 
-std::optional<google::protobuf::Any> FuncClientImpl::Event(int event_type,
-    const google::protobuf::Any& payload) {
+std::optional<google::protobuf::Any> FuncClientImpl::Event(
+    int event_type, const google::protobuf::Any& payload) {
   // Set up request
   grpc::ClientContext context;
   func::EventRequest request;

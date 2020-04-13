@@ -3,11 +3,11 @@
 
 #include <grpcpp/grpcpp.h>
 
-#include <string>
-#include <vector>
-#include <optional>
 #include <memory>
+#include <optional>
+#include <string>
 #include <unordered_map>
+#include <vector>
 
 #include "kvstore/kvstore.grpc.pb.h"
 #include "kvstore/kvstore.pb.h"
@@ -64,8 +64,8 @@ class KVStoreWarbleClient : public KVStoreClientAbstract {
 class KVStoreTestClient : public KVStoreClientAbstract {
  public:
   KVStoreTestClient() {}
-  explicit KVStoreTestClient
-      (const std::unordered_map<std::string, std::vector<std::string>>& s)
+  explicit KVStoreTestClient(
+      const std::unordered_map<std::string, std::vector<std::string>>& s)
       : storage_(s) {}
 
   // Disable move and copy

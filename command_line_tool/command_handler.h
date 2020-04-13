@@ -5,9 +5,9 @@
 #include <glog/logging.h>
 #include <google/protobuf/any.pb.h>
 
+#include <iostream>
 #include <memory>
 #include <string>
-#include <iostream>
 
 #include "func/func_client.h"
 #include "warble/warble.pb.h"
@@ -47,7 +47,7 @@ class RegisterHandler : public Handler {
  public:
   // Default constructor
   explicit RegisterHandler(std::shared_ptr<func::FuncClientAbstract> client)
-      :Handler(client) {}
+      : Handler(client) {}
 
   // Default destructor
   ~RegisterHandler() {}

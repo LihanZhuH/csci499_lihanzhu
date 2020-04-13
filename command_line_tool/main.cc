@@ -9,10 +9,10 @@ int main(int argc, char *argv[]) {
   google::InitGoogleLogging(argv[0]);
 
   // Initialize func client and pass into command line handler
-  auto channel = grpc::CreateChannel(
-      "localhost:50000", grpc::InsecureChannelCredentials());
-  std::shared_ptr<func::FuncClientAbstract> func_client
-      (new func::FuncClientImpl(channel));
+  auto channel = grpc::CreateChannel("localhost:50000",
+                                     grpc::InsecureChannelCredentials());
+  std::shared_ptr<func::FuncClientAbstract> func_client(
+      new func::FuncClientImpl(channel));
   command_line::CommandLineTool command_line_handler(func_client);
 
   command_line_handler.Run();

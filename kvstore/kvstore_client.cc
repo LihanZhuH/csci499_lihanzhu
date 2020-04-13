@@ -73,11 +73,8 @@ bool KVStoreWarbleClient::KeyExists(const std::string& key) {
 
 // -- Implementation of KVStoreTestClient --
 
-bool KVStoreTestClient::Put(const std::string& key,
-                            const std::string& value) {
-  auto it = std::find(storage_[key].begin(),
-                      storage_[key].end(),
-                      value);
+bool KVStoreTestClient::Put(const std::string& key, const std::string& value) {
+  auto it = std::find(storage_[key].begin(), storage_[key].end(), value);
   if (it != storage_[key].end()) {
     return false;
   }

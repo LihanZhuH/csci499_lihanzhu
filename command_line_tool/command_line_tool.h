@@ -5,14 +5,14 @@
 #include <glog/logging.h>
 #include <google/protobuf/any.pb.h>
 
-#include <memory>
-#include <vector>
-#include <string>
 #include <iostream>
+#include <memory>
+#include <string>
 #include <utility>
+#include <vector>
 
-#include "func/func_client.h"
 #include "command_line_tool/command_handler.h"
+#include "func/func_client.h"
 
 namespace command_line {
 

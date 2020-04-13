@@ -62,8 +62,8 @@ class KeyValueStoreClient {
 }  // namespace kvstore
 
 int main(int argc, char const *argv[]) {
-  auto channel = grpc::CreateChannel(
-      "localhost:50001", grpc::InsecureChannelCredentials());
+  auto channel = grpc::CreateChannel("localhost:50001",
+                                     grpc::InsecureChannelCredentials());
   kvstore::KeyValueStoreClient client(channel);
 
   client.TestPut("A", "B");
