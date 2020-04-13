@@ -1,6 +1,7 @@
 #ifndef KVSTORE_DATABASE_H_
 #define KVSTORE_DATABASE_H_
 
+#include <iostream>
 #include <mutex>
 #include <optional>
 #include <string>
@@ -34,12 +35,21 @@ class DataBase {
   // Return true if key exists, false otherwise
   bool RemoveFromStorage(const std::string &key);
 
+  // Serializes 'storage_map_' into string and puts it in 'os'
+  void Serialize(std::ostream &os) const;
+
+  // Deserializes from 'is' and replaces 'storage_map_'
+  bool Deserialize(std::istream &is);
+
  private:
   // Local storage of key-value pairs
   std::unordered_map<std::string, std::vector<std::string>> storage_map_;
 
   // Mutex for thread-safe
   std::mutex map_mutex_;
+
+  // States for deserialization
+  enum STATE {KEY, SIZE, VALUES};
 };
 
 }  // namespace kvstore
