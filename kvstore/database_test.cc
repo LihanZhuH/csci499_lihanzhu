@@ -2,6 +2,8 @@
 
 #include <gtest/gtest.h>
 
+#include <sstream>
+
 // Test fixture with a empty Database object
 class DatabaseTest : public ::testing::Test {
  protected:
@@ -61,4 +63,34 @@ TEST_F(DatabaseTest, RemoveExistingKeyShouldSucceed) {
 // Should return false
 TEST_F(DatabaseTest, RemoveNonExistingKeyShouldFail) {
   ASSERT_FALSE(db_.RemoveFromStorage("key1"));
+}
+
+// Serialize database with one entry
+TEST_F(DatabaseTest, SerializeShouldSucceed) {
+  ASSERT_TRUE(db_.PutIntoStorage("key1", "value1"));
+  std::stringstream ss;
+  db_.Serialize(ss);
+  EXPECT_EQ(ss.str(), "key1\n1\nvalue1\n");
+}
+
+// Serialize database with one entry
+TEST_F(DatabaseTest, SerializeComplexShouldSucceed) {
+  ASSERT_TRUE(db_.PutIntoStorage("key1", "value1"));
+  ASSERT_TRUE(db_.PutIntoStorage("key1", "value2"));
+  ASSERT_TRUE(db_.PutIntoStorage("key2", "value3"));
+  std::stringstream ss;
+  db_.Serialize(ss);
+  EXPECT_EQ(ss.str(), "key2\n1\nvalue3\nkey1\n2\nvalue1\nvalue2\n");
+}
+
+// Deserialize from a proper stringstream
+TEST_F(DatabaseTest, DeserializeValidStringShouldSucceed) {
+  std::stringstream ss("key1\n1\nvalue1\n");
+  EXPECT_TRUE(db_.Deserialize(ss));
+}
+
+// Deserialize from an improper stringstream
+TEST_F(DatabaseTest, DeserializeInvalidStringShouldFail) {
+  std::stringstream ss("key1\nvalue1\n");
+  EXPECT_FALSE(db_.Deserialize(ss));
 }
