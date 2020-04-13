@@ -6,6 +6,7 @@
 #include <string>
 #include <unordered_map>
 #include <vector>
+#include <iostream>
 
 namespace kvstore {
 
@@ -33,6 +34,12 @@ class DataBase {
   // Remove key in storage
   // Return true if key exists, false otherwise
   bool RemoveFromStorage(const std::string &key);
+
+  // Serializes 'storage_map_' into string and puts it in 'os'
+  void Serialize(std::ostream &os) const;
+
+  // Deserializes from 'is' and replaces 'storage_map_'
+  bool Deserialize(std::istream &is);
 
  private:
   // Local storage of key-value pairs

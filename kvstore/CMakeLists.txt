@@ -21,6 +21,7 @@ add_custom_command(
 
 # Compiles database as a library
 add_library(database STATIC database.cc database.h)
+target_link_libraries(database  ${GLOG_LIBRARIES})
 
 # Compile kvstore_client as a library
 add_library(kvstore_client STATIC
@@ -51,6 +52,7 @@ add_executable(kvstore_server "kvstore_server.cc"
 target_link_libraries(kvstore_server
   ${_GRPC_GRPCPP_UNSECURE}
   ${_PROTOBUF_LIBPROTOBUF}
+  ${GFLAGS_LIBRARIES}
   database
   ${GLOG_LIBRARIES}
   ${GFLAGS_LIBRARIES}
