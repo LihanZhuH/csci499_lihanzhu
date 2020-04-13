@@ -84,13 +84,13 @@ TEST_F(DatabaseTest, SerializeComplexShouldSucceed) {
 }
 
 // Deserialize from a proper stringstream
-TEST_F(DatabaseTest, DeserializeShouldSucceed) {
+TEST_F(DatabaseTest, DeserializeValidStringShouldSucceed) {
   std::stringstream ss("key1\n1\nvalue1\n");
   EXPECT_TRUE(db_.Deserialize(ss));
 }
 
 // Deserialize from an improper stringstream
-TEST_F(DatabaseTest, DeserializeShouldFail) {
+TEST_F(DatabaseTest, DeserializeInvalidStringShouldFail) {
   std::stringstream ss("key1\nvalue1\n");
   EXPECT_FALSE(db_.Deserialize(ss));
 }

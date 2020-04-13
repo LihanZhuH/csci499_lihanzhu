@@ -47,6 +47,9 @@ class DataBase {
 
   // Mutex for thread-safe
   std::mutex map_mutex_;
+
+  // States for deserialization
+  enum STATE {KEY, SIZE, VALUES};
 };
 
 }  // namespace kvstore

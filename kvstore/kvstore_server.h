@@ -22,7 +22,7 @@ class KeyValueStoreImpl final : public kvstore::KeyValueStore::Service {
 
  public:
   // Destructor
-  ~KeyValueStoreImpl() { HandlerHelper(); }
+  ~KeyValueStoreImpl() {}
 
   // Disable move and copy
   KeyValueStoreImpl(const KeyValueStoreImpl&) = delete;
@@ -64,13 +64,13 @@ class KeyValueStoreImpl final : public kvstore::KeyValueStore::Service {
   std::string filename_;
 
   // Static handler for sigaction. Calls instance's HandlerHelper.
-  static void SigHandler(int s);
+  static void HandleSignal(int s);
 
   // Loads database from file. Can only be called after persistence is enabled.
   bool Load();
 
   // Non-static handler for SIGINT and SIGTERM
-  bool HandlerHelper();
+  bool CleanUp();
 
   // Saves database to file
   void Save();

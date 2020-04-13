@@ -70,15 +70,15 @@ bool KeyValueStoreImpl::EnableDiskPersistence(const std::string& filename) {
   // Adds handlers for SIGINT and SIGTERM
   struct sigaction sig_handler;
   sig_handler.sa_flags = 0;
-  sig_handler.sa_handler = SigHandler;
+  sig_handler.sa_handler = HandleSignal;
   sigaction(SIGINT, &sig_handler, NULL);
   sigaction(SIGTERM, &sig_handler, NULL);
   return true;
 }
 
-void KeyValueStoreImpl::SigHandler(int s) {
-  LOG(INFO) << "kvstore_server - SigHandler: Storing to file";
-  if (!getInstance().HandlerHelper()) {
+void KeyValueStoreImpl::HandleSignal(int s) {
+  LOG(INFO) << "kvstore_server - HandleSignal: Storing to file";
+  if (!getInstance().CleanUp()) {
     std::cout << "Failed to store to file \"" << getInstance().filename_
               << "\"." << std::endl;
   }
@@ -104,14 +104,14 @@ bool KeyValueStoreImpl::Load() {
   return result;
 }
 
-bool KeyValueStoreImpl::HandlerHelper() {
+bool KeyValueStoreImpl::CleanUp() {
   terminated_ = true;
   std::ofstream out_file;
   out_file.open(filename_);
 
   // Fails to open file
   if (out_file.fail()) {
-    LOG(WARNING) << "kvstore_server - HandlerHelper: Failed to open file.";
+    LOG(WARNING) << "kvstore_server - CleanUp: Failed to open file.";
     return false;
   }
   out_file.close();
