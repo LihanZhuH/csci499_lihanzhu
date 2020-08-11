@@ -58,12 +58,11 @@ void DataBase::Serialize(std::ostream &os) const {
 bool DataBase::Deserialize(std::istream &is) {
   std::string line, key;  // Line to be read and current key.
   int values_left = 0;    // Number of values left to be read.
-  
+
   STATE state = KEY;
   while (getline(is, line)) {
     // Uses a state machine to read different components.
-    switch (state)
-    {
+    switch (state) {
       case KEY:  // Reads the key
         key = line;
         state = SIZE;

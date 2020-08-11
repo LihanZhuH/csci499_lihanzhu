@@ -49,7 +49,7 @@ class DataBase {
   std::mutex map_mutex_;
 
   // States for deserialization
-  enum STATE {KEY, SIZE, VALUES};
+  enum STATE { KEY, SIZE, VALUES };
 };
 
 }  // namespace kvstore

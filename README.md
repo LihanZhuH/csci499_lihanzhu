@@ -1,4 +1,4 @@
-# CSCI 499 Project
+# Warble
 
 ### *Author: Lihan Zhu*
 
